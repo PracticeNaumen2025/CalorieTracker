@@ -1,0 +1,67 @@
+databaseChangeLog:
+  - changeSet:
+      id: 12-create-indexes
+      author: Denis
+      changes:
+        - createIndex:
+            indexName: idx_users_username
+            tableName: users
+            columns:
+              - column:
+                  name: username
+        - createIndex:
+            indexName: idx_products_name
+            tableName: products
+            columns:
+              - column:
+                  name: name
+        - createIndex:
+            indexName: idx_meals_user_date
+            tableName: meals
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: date_time
+        - createIndex:
+            indexName: idx_foodentries_meal_id
+            tableName: foodentries
+            columns:
+              - column:
+                  name: meal_id
+        - createIndex:
+            indexName: idx_foodentries_product_id
+            tableName: foodentries
+            columns:
+              - column:
+                  name: product_id
+        - createIndex:
+            indexName: idx_daysummary_user_date
+            tableName: daysummary
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: date
+        - createIndex:
+            indexName: idx_usermeasurements_user_date
+            tableName: usermeasurements
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: date
+        - createIndex:
+            indexName: idx_usergoals_user_id
+            tableName: usergoals
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            indexName: idx_exerciseentries_user_date
+            tableName: exerciseentries
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: date_time

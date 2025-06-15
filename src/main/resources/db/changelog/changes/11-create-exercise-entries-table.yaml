@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: 11-create-exercise-entries-table
+      author: Denis
+      changes:
+        - createTable:
+            tableName: exerciseentries
+            columns:
+              - column:
+                  name: entry_id
+                  type: INTEGER
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_exerciseentries_user_id
+                    references: users(user_id)
+              - column:
+                  name: exercise_id
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_exerciseentries_exercise_id
+                    references: exercises(exercise_id)
+              - column:
+                  name: date_time
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: duration_minutes
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: calories_burned
+                  type: DECIMAL(7,2)

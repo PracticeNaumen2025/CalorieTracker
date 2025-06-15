@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: 02-create-users-table
+      author: Denis
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: user_id
+                  type: INTEGER
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: username
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password_hash
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_users_role_id
+                    references: roles(role_id)
+              - column:
+                  name: date_of_birth
+                  type: DATE
+              - column:
+                  name: gender
+                  type: VARCHAR(10)
+              - column:
+                  name: height_cm
+                  type: DECIMAL(5,2)
+              - column:
+                  name: weight_kg
+                  type: DECIMAL(5,2)
+              - column:
+                  name: activity_level
+                  type: VARCHAR(20)
+              - column:
+                  name: is_deleted
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP

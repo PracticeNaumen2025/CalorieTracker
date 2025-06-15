@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 07-create-meals-table
+      author: Denis
+      changes:
+        - createTable:
+            tableName: meals
+            columns:
+              - column:
+                  name: meal_id
+                  type: INTEGER
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_meals_user_id
+                    references: users(user_id)
+              - column:
+                  name: date_time
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: meal_type
+                  type: VARCHAR(20)

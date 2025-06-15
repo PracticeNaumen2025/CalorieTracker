@@ -1,0 +1,52 @@
+databaseChangeLog:
+  - changeSet:
+      id: 08-create-food-entries-table
+      author: Denis
+      changes:
+        - createTable:
+            tableName: foodentries
+            columns:
+              - column:
+                  name: entry_id
+                  type: INTEGER
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: meal_id
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_foodentries_meal_id
+                    references: meals(meal_id)
+              - column:
+                  name: product_id
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_foodentries_product_id
+                    references: products(product_id)
+              - column:
+                  name: portion_grams
+                  type: DECIMAL(6,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: calories
+                  type: DECIMAL(7,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: protein_g
+                  type: DECIMAL(5,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: fat_g
+                  type: DECIMAL(5,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: carbs_g
+                  type: DECIMAL(5,2)
+                  constraints:
+                    nullable: false
