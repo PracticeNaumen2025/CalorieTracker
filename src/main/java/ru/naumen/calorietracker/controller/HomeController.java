@@ -10,4 +10,14 @@ public class HomeController {
     public String home() {
         return "index";
     }
+
+    @GetMapping("/register")
+    public String showRegistrationForm() {
+        return "register";
+    }
+
+    @GetMapping("/login")
+    public String loginView() {
+        return "login";
+    }
 }

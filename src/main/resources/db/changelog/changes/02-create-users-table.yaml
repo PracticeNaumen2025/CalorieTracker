@@ -8,7 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: user_id
-                  type: INTEGER
+                  type: SERIAL
                   constraints:
                     primaryKey: true
               - column:
@@ -22,13 +22,6 @@ databaseChangeLog:
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
-              - column:
-                  name: role_id
-                  type: INTEGER
-                  constraints:
-                    nullable: false
-                    foreignKeyName: fk_users_role_id
-                    references: roles(role_id)
               - column:
                   name: date_of_birth
                   type: DATE

@@ -8,7 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: role_id
-                  type: INTEGER
+                  type: SERIAL
                   constraints:
                     primaryKey: true
               - column:
@@ -17,3 +17,15 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     unique: true
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: role_name
+                  value: ADMIN
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: role_name
+                  value: USER
