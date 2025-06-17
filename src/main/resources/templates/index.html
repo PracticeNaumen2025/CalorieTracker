@@ -1,13 +1,50 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Welcome to Calorie Tracker</title>
-    <link rel="stylesheet" th:href="@{/css/index.css}" href="/css/index.css">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head layout:fragment="title">
+    <title>Главная</title>
 </head>
 <body>
-<h1>Welcome to Calorie Tracker</h1>
-<p>Track your calories, meals, and exercises with ease!</p>
-<p>Это временная страница</p>
+<main layout:fragment="content" class="flex flex-col items-center text-center px-6 py-20 space-y-12">
+    <!-- Приветствие -->
+    <div>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-primary mb-4 animate-fade-in">
+            Добро пожаловать в CalorieTracker
+        </h1>
+        <p class="text-lg text-gray-600 max-w-xl mx-auto animate-slide-up delay-200">
+            Следите за своим рационом, считайте калории и достигайте целей по питанию с удовольствием!
+        </p>
+        <a th:href="@{/diary}"
+           class="mt-6 inline-block bg-primary text-white px-6 py-3 rounded-full shadow-lg hover:bg-secondary transition-all duration-300 animate-fade-in delay-300">
+            Перейти к дневнику
+        </a>
+    </div>
+
+    <!-- Возможности приложения -->
+    <section class="grid gap-6 md:grid-cols-3 max-w-6xl mt-8 animate-fade-in delay-400">
+        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
+            <div class="text-4xl text-primary mb-3">🥗</div>
+            <h3 class="text-xl font-semibold mb-2">Каталог продуктов</h3>
+            <p class="text-gray-600 text-sm">Храните и управляйте продуктами с учётом КБЖУ.</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
+            <div class="text-4xl text-secondary mb-3">📒</div>
+            <h3 class="text-xl font-semibold mb-2">Пищевой дневник</h3>
+            <p class="text-gray-600 text-sm">Записывайте, что вы съели, и отслеживайте суточный рацион.</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
+            <div class="text-4xl text-green-600 mb-3">📊</div>
+            <h3 class="text-xl font-semibold mb-2">Аналитика и отчёты</h3>
+            <p class="text-gray-600 text-sm">Анализируйте свои привычки с графиками и отчетами.</p>
+        </div>
+    </section>
+
+    <!-- Мотивационная цитата -->
+    <div class="italic text-sm text-gray-500 max-w-md mx-auto mt-10 animate-fade-in delay-500">
+        “Ваше тело заслуживает самого лучшего. Начните заботиться о нём уже сегодня.”
+    </div>
+</main>
+
 </body>
 </html>

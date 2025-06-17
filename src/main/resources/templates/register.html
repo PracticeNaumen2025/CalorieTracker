@@ -1,43 +1,48 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Регистрация</title>
-    <link rel="stylesheet" href="/css/register.css">
+    <title layout:fragment="title">Регистрация</title>
 </head>
 <body>
-<div class="login-container">
-    <div class="logo">
-        <h1>Регистрация</h1>
+<main layout:fragment="content">
+    <div class="w-full max-w-md mx-auto mt-10 bg-white p-8 rounded-xl shadow-md animate-fade-in">
+        <h1 class="text-2xl font-bold mb-6 text-primary text-center">Регистрация</h1>
+
+        <div id="error-message" class="text-red-500 text-sm mb-4" style="display: none;"></div>
+
+        <form id="registerForm" class="space-y-4">
+            <div>
+                <label for="username" class="block text-sm font-medium">Имя пользователя</label>
+                <input type="text" id="username" name="username"
+                       class="w-full border border-gray-300 rounded px-3 py-2 mt-1" required>
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-medium">E-mail</label>
+                <input type="email" id="email" name="email"
+                       class="w-full border border-gray-300 rounded px-3 py-2 mt-1" required>
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium">Пароль</label>
+                <input type="password" id="password" name="password"
+                       class="w-full border border-gray-300 rounded px-3 py-2 mt-1" required>
+            </div>
+
+            <button type="submit"
+                    class="w-full bg-primary text-white py-2 rounded hover:bg-green-600 transition-colors duration-300">
+                Зарегистрироваться
+            </button>
+        </form>
+
+        <div class="mt-4 text-sm text-center">
+            <a href="/login" class="text-primary hover:underline">Уже есть аккаунт? Войти</a>
+        </div>
     </div>
 
-    <div id="error-message" class="error-message" style="display: none;"></div>
-
-    <form id="registerForm">
-        <div class="form-group">
-            <label for="username">Имя пользователя</label>
-            <input type="text" id="username" name="username" required>
-        </div>
-
-        <div class="form-group">
-            <label for="email">E-mail</label>
-            <input type="email" id="email" name="email" required>
-        </div>
-
-        <div class="form-group">
-            <label for="password">Пароль</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-
-        <button type="submit" class="login-btn">Зарегистрироваться</button>
-    </form>
-
-    <div class="register-link">
-        <a href="/login">Уже есть аккаунт? Войти</a>
-    </div>
-</div>
-
-<script src="/js/register.js"></script>
+    <script src="/js/register.js"></script>
+</main>
 </body>
 </html>

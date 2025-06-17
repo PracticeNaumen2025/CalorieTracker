@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title layout:title-pattern="$CONTENT_TITLE - CalorieTracker" layout:fragment="title">CalorieTracker</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#10b981',
+                        secondary: '#f43f5e',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-white min-h-screen text-gray-800">
+
+<!-- Навигация -->
+<nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <a th:href="@{/}" class="text-2xl font-bold text-primary hover:text-secondary transition-colors duration-300">
+            CalorieTracker
+        </a>
+        <ul class="hidden md:flex space-x-6 font-medium">
+            <li><a th:href="@{/}" class="hover:text-primary transition duration-300">Главная</a></li>
+            <li><a th:href="@{/products}" class="hover:text-primary transition duration-300">Продукты</a></li>
+            <li><a th:href="@{/diary}" class="hover:text-primary transition duration-300">Дневник</a></li>
+            <li><a th:href="@{/reports}" class="hover:text-primary transition duration-300">Отчёты</a></li>
+            <li><a th:href="@{/exercises}" class="hover:text-primary transition duration-300">Активность</a></li>
+            <li><a th:href="@{/profile}" class="hover:text-primary transition duration-300">Профиль</a></li>
+        </ul>
+
+        <!-- Вход / Выход -->
+        <div class="ml-6">
+            <div sec:authorize="isAuthenticated()">
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit"
+                            class="bg-secondary text-white px-4 py-2 rounded hover:bg-red-500 transition">
+                        Выйти
+                    </button>
+                </form>
+            </div>
+            <div sec:authorize="isAnonymous()">
+                <a th:href="@{/login}"
+                   class="bg-primary text-white px-4 py-2 rounded hover:bg-green-700 transition inline-block text-center">
+                    Войти
+                </a>
+            </div>
+        </div>
+
+    </div>
+</nav>
+
+<!-- Контент страницы -->
+<main class="flex flex-col items-center justify-center text-center px-6 py-20"
+      layout:fragment="content">
+</main>
+
+<!-- Футер -->
+<footer class="bg-white shadow-inner mt-auto">
+    <div class="max-w-7xl mx-auto px-4 py-6 text-center text-gray-500 text-sm">
+        © 2025 CalorieTracker · Контакты: info@calorietracker.example.com
+    </div>
+</footer>
+
+<!-- Анимации -->
+<style>
+    .animate-fade-in {
+        opacity: 0;
+        animation: fadeIn 1s forwards;
+    }
+    .animate-slide-up {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: slideUp 1s forwards;
+    }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
+
+    @keyframes fadeIn {
+        to { opacity: 1; }
+    }
+    @keyframes slideUp {
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+</body>
+</html>

@@ -43,6 +43,15 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserResponse(savedUser);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public UserResponse getUserByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        "Пользователь с юзернеймом \"%s\" не найден".formatted(username)));
+        return userMapper.toUserResponse(user);
+    }
+
     private void assignDefaultRole(User user) {
         Role defaultRole = roleService.getDefaultUserRole();
         user.getRoles().add(defaultRole);

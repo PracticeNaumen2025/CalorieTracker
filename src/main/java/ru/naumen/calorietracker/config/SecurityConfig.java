@@ -21,7 +21,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/swagger-ui/**", "/monitoring/**").hasRole("ADMIN")
-                        .requestMatchers("/register", "/api/auth/register", "/css/**", "/js/**", "/images/**", "/login").permitAll()
+                        .requestMatchers("/register", "/api/auth/register", "/css/**", "/js/**", "/images/**", "/login", "/favicon.png").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

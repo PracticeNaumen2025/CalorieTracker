@@ -1,38 +1,44 @@
 <!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход в систему</title>
-    <link rel="stylesheet" href="/css/login.css">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head layout:fragment="title">
+    <title>Вход</title>
 </head>
 <body>
-<div class="login-container">
-    <div class="logo">
-        <h1>Авторизация</h1>
-    </div>
-    <div id="error-message" class="error-message" style="display: none;">
+<main layout:fragment="content" class="w-full max-w-md mx-auto bg-white p-8 rounded-xl shadow-lg animate-fade-in">
+    <h1 class="text-2xl font-bold text-primary mb-6 text-center">Вход в систему</h1>
+
+    <div th:if="${param.error}" class="bg-red-100 text-red-600 p-3 rounded mb-4">
         Неверное имя пользователя или пароль
     </div>
-    <div id="logout-message" class="success-message" style="display: none;">
+    <div th:if="${param.logout}" class="bg-green-100 text-green-700 p-3 rounded mb-4">
         Вы успешно вышли из системы
     </div>
-    <form action="/login" method="post" th:action="@{/login}">
-        <div class="form-group">
-            <label for="username">Имя пользователя</label>
-            <input type="text" id="username" name="username" required>
+
+    <form th:action="@{/login}" method="post" class="space-y-4">
+        <div>
+            <label for="username" class="block text-left text-sm font-medium text-gray-700">Имя пользователя</label>
+            <input type="text" id="username" name="username" required
+                   class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
         </div>
-        <div class="form-group">
-            <label for="password">Пароль</label>
-            <input type="password" id="password" name="password" required>
+        <div>
+            <label for="password" class="block text-left text-sm font-medium text-gray-700">Пароль</label>
+            <input type="password" id="password" name="password" required
+                   class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
         </div>
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-        <button type="submit" class="login-btn">Войти</button>
+        <button type="submit"
+                class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-secondary transition duration-300">
+            Войти
+        </button>
     </form>
-    <div class="register-link">
-        <a href="/register">Нет аккаунта? Зарегистрироваться</a>
+
+    <div class="text-center mt-4">
+        <a th:href="@{/register}" class="text-sm text-primary hover:underline">
+            Нет аккаунта? Зарегистрироваться
+        </a>
     </div>
-</div>
-<script src="/js/login.js"></script>
+</main>
 </body>
 </html>
