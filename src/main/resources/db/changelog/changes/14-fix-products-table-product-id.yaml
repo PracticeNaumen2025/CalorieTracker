@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 14-fix-products-table-product-id
+      author: Denis
+      changes:
+        - createSequence:
+            sequenceName: products_product_id_seq
+        - sql:
+            sql: ALTER TABLE products ALTER COLUMN product_id SET DATA TYPE INTEGER;
+        - sql:
+            sql: ALTER TABLE products ALTER COLUMN product_id SET DEFAULT nextval('products_product_id_seq');
+        - sql:
+            sql: ALTER TABLE products ALTER COLUMN product_id SET NOT NULL;
+        - sql:
+            sql: SELECT setval('products_product_id_seq', COALESCE((SELECT MAX(product_id) + 1 FROM products), 1), false);

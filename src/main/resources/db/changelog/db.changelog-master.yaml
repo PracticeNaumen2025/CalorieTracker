@@ -25,3 +25,5 @@ databaseChangeLog:
       file: db/changelog/changes/13-create-users-roles-table.yaml
   - include:
       file: db/changelog/changes/12-create-indexes.yaml
+  - include:
+      file: db/changelog/changes/14-fix-products-table-product-id.yaml
