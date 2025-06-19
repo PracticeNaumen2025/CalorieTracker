@@ -9,8 +9,8 @@ import ru.naumen.calorietracker.dto.ProductCreateRequest;
 import ru.naumen.calorietracker.dto.ProductResponse;
 import ru.naumen.calorietracker.dto.ProductUpdateRequest;
 import ru.naumen.calorietracker.model.User;
-import ru.naumen.calorietracker.repository.UserRepository;
 import ru.naumen.calorietracker.service.ProductService;
+import ru.naumen.calorietracker.util.AuthUtils;
 
 import java.security.Principal;
 import java.util.List;
@@ -22,12 +22,12 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-    private final UserRepository userRepository;
+    private final AuthUtils authUtils;
 
     @PostMapping("/add")
     public ResponseEntity<?> addProduct(@Valid @RequestBody ProductCreateRequest request, Principal principal) {
         try {
-            User user = getAuthenticatedUser(principal);
+            User user = authUtils.getAuthenticatedUser(principal);
             ProductResponse response = productService.createProduct(request, user);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
@@ -38,7 +38,7 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAllProducts(Principal principal) {
         try {
-            checkAuthentication(principal);
+            authUtils.checkAuthentication(principal);
             List<ProductResponse> products = productService.getAllProducts();
             return ResponseEntity.ok(products);
         } catch (RuntimeException e) {
@@ -49,7 +49,7 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable Integer id, Principal principal) {
         try {
-            checkAuthentication(principal);
+            authUtils.checkAuthentication(principal);
             ProductResponse product = productService.getProductById(id);
             return ResponseEntity.ok(product);
         } catch (RuntimeException e) {
@@ -60,7 +60,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable Integer id, @Valid @RequestBody ProductUpdateRequest request, Principal principal) {
         try {
-            User user = getAuthenticatedUser(principal);
+            User user = authUtils.getAuthenticatedUser(principal);
             ProductResponse response = productService.updateProduct(id, request, user);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
@@ -72,7 +72,7 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Integer id, Principal principal) {
         try {
-            checkAuthentication(principal);
+            authUtils.checkAuthentication(principal);
             productService.deleteProduct(id);
             return ResponseEntity.ok("Продукт успешно удален");
         } catch (RuntimeException e) {
@@ -85,15 +85,4 @@ public class ProductController {
         return productService.searchByName(name);
     }
 
-    private void checkAuthentication(Principal principal) {
-        if (principal == null) {
-            throw new RuntimeException("Пользователь не аутентифицирован");
-        }
-    }
-
-    private User getAuthenticatedUser(Principal principal) {
-        checkAuthentication(principal);
-        return userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
-    }
 }
