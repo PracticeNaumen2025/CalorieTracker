@@ -80,6 +80,11 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/search")
+    public List<ProductResponse> search(@RequestParam String name) {
+        return productService.searchByName(name);
+    }
+
     private void checkAuthentication(Principal principal) {
         if (principal == null) {
             throw new RuntimeException("Пользователь не аутентифицирован");

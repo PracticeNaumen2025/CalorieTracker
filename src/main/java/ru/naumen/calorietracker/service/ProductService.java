@@ -14,4 +14,5 @@ public interface ProductService {
     ProductResponse createProduct(ProductCreateRequest request, User user);
     ProductResponse updateProduct(Integer id, ProductUpdateRequest request, User user) throws RuntimeException;
     void deleteProduct(Integer id) throws RuntimeException;
+    List<ProductResponse> searchByName(String name);
 }

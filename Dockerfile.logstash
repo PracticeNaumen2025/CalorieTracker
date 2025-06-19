@@ -1,0 +1,6 @@
+FROM docker.elastic.co/logstash/logstash:8.11.0
+
+RUN curl -L https://jdbc.postgresql.org/download/postgresql-42.7.1.jar \
+    -o /usr/share/logstash/logstash-core/lib/jars/postgresql.jar
+
+RUN mkdir -p /usr/share/logstash/data

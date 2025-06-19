@@ -10,7 +10,9 @@ import ru.naumen.calorietracker.mapper.ProductMapper;
 import ru.naumen.calorietracker.model.Category;
 import ru.naumen.calorietracker.model.Product;
 import ru.naumen.calorietracker.model.User;
+import ru.naumen.calorietracker.model.elastic.ProductSearchDocument;
 import ru.naumen.calorietracker.repository.ProductRepository;
+import ru.naumen.calorietracker.repository.search.ProductSearchRepository;
 import ru.naumen.calorietracker.service.CategoryService;
 import ru.naumen.calorietracker.service.ProductService;
 
@@ -24,6 +26,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
     private final ProductMapper productMapper;
+    private final ProductSearchRepository productSearchRepository;
 
     @Override
     public List<ProductResponse> getAllProducts() {
@@ -92,5 +95,11 @@ public class ProductServiceImpl implements ProductService {
 
         product.setIsDeleted(true);
         productRepository.save(product);
+    }
+
+    @Override
+    public List<ProductResponse> searchByName(String name) {
+        List<ProductSearchDocument> docs = productSearchRepository.findByNameFuzzy(name);
+        return productMapper.toProductResponseList(docs);
     }
 }

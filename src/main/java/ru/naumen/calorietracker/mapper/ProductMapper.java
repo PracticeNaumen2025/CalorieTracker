@@ -7,6 +7,9 @@ import ru.naumen.calorietracker.dto.ProductCreateRequest;
 import ru.naumen.calorietracker.dto.ProductResponse;
 import ru.naumen.calorietracker.dto.ProductUpdateRequest;
 import ru.naumen.calorietracker.model.Product;
+import ru.naumen.calorietracker.model.elastic.ProductSearchDocument;
+
+import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ProductMapper {
@@ -29,4 +32,6 @@ public interface ProductMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Product toProduct(ProductUpdateRequest request);
+
+    List<ProductResponse> toProductResponseList(List<ProductSearchDocument> docs);
 }
