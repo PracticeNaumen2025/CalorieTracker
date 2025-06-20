@@ -100,6 +100,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductResponse> searchByName(String name) {
         List<ProductSearchDocument> docs = productSearchRepository.findByNameFuzzy(name);
+        if (docs.isEmpty())
+            docs = productSearchRepository.findByNamePrefix(name);
         return productMapper.toProductResponseList(docs);
     }
 }

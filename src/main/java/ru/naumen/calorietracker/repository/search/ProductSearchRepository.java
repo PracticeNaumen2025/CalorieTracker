@@ -13,4 +13,6 @@ public interface ProductSearchRepository
     @Query("{\"match\": {\"name\": {\"query\": \"?0\", \"fuzziness\": \"AUTO\"}}}")
     List<ProductSearchDocument> findByNameFuzzy(String name);
 
+    @Query("{\"match_phrase_prefix\": {\"name\": \"?0\"}}")
+    List<ProductSearchDocument> findByNamePrefix(String name);
 }
