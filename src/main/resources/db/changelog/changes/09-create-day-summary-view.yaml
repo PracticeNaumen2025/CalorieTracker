@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 09-create-day-summary-view
+      author: Orgmange
+      changes:
+        - createView:
+            viewName: v_day_summary
+            selectQuery: >
+              SELECT
+                  m.user_id,
+                  CAST(m.date_time AS date) AS date,
+                  COALESCE(SUM(fe.calories), 0) AS total_calories,
+                  COALESCE(SUM(fe.protein_g), 0) AS total_protein,
+                  COALESCE(SUM(fe.fat_g), 0) AS total_fat,
+                  COALESCE(SUM(fe.carbs_g), 0) AS total_carbs
+              FROM meals m
+              JOIN foodentries fe ON m.meal_id = fe.meal_id
+              GROUP BY m.user_id, CAST(m.date_time AS date)
+            replaceIfExists: true

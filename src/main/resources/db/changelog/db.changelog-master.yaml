@@ -16,7 +16,7 @@ databaseChangeLog:
   - include:
       file: db/changelog/changes/08-create-food-entries-table.yaml
   - include:
-      file: db/changelog/changes/09-create-day-summary-table.yaml
+      file: db/changelog/changes/09-create-day-summary-view.yaml
   - include:
       file: db/changelog/changes/10-create-exercises-table.yaml
   - include:

@@ -2,37 +2,34 @@ package ru.naumen.calorietracker.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
+import org.hibernate.annotations.Immutable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "daysummary")
+@Immutable
 @Getter
-@Setter
+@IdClass(DaySummaryId.class)
+@Table(name = "v_day_summary")
 public class DaySummary {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "summary_id")
-    private Integer summaryId;
+    @Column(name = "user_id")
+    private Integer userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @Column(name = "date", nullable = false)
+    @Id
+    @Column(name = "date")
     private LocalDate date;
 
-    @Column(name = "total_calories", nullable = false)
+    @Column(name = "total_calories")
     private BigDecimal totalCalories;
 
-    @Column(name = "total_protein", nullable = false)
+    @Column(name = "total_protein")
     private BigDecimal totalProtein;
 
-    @Column(name = "total_fat", nullable = false)
+    @Column(name = "total_fat")
     private BigDecimal totalFat;
 
-    @Column(name = "total_carbs", nullable = false)
+    @Column(name = "total_carbs")
     private BigDecimal totalCarbs;
 }
