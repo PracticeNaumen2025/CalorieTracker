@@ -6,6 +6,6 @@ import ru.naumen.calorietracker.dto.PeriodSummaryRequest;
 import java.util.List;
 
 public interface SummaryService {
-    DaySummaryResponse getDaySummary(DaySummaryRequest request);
-    List<DaySummaryResponse> getPeriodSummary(PeriodSummaryRequest request);
+    DaySummaryResponse getDaySummary(Integer userId, DaySummaryRequest request);
+    List<DaySummaryResponse> getPeriodSummary(Integer userId, PeriodSummaryRequest request);
 }

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title layout:fragment="title">Отчёты</title>
+</head>
+
+<main layout:fragment="content" class="w-full px-4 py-8 text-left">
+    <div class="max-w-7xl mx-auto">
+        <div class="animate-fade-in">
+            <h1 class="text-4xl font-bold text-gray-800 mb-8 text-center">
+                Отчёты и Аналитика
+            </h1>
+            
+            <!-- Фильтры периода -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8 animate-slide-up">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Период анализа</h2>
+                <div class="flex flex-wrap gap-4 items-center">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">От:</label>
+                        <input type="date" id="dateFrom" class="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">До:</label>
+                        <input type="date" id="dateTo" class="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent">
+                    </div>
+                    <div class="flex gap-2 mt-6">
+                        <button onclick="setPeriod(7)" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-green-700 transition">7 дней</button>
+                        <button onclick="setPeriod(30)" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-green-700 transition">30 дней</button>
+                        <button onclick="setPeriod(90)" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-green-700 transition">3 месяца</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Сводная статистика -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 animate-slide-up delay-200">
+                <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                    <div class="text-3xl font-bold text-primary mb-2" id="avgCalories"></div>
+                    <div class="text-gray-600">Средние калории в день</div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                    <div class="text-3xl font-bold text-blue-500 mb-2" id="totalDays"></div>
+                    <div class="text-gray-600">Дней в анализе</div>
+                </div>
+            </div>
+
+            <!-- Графики -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- График калорий по дням -->
+                <div class="bg-white rounded-lg shadow-md p-6 animate-slide-up delay-300">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">Калории по дням</h3>
+                    <div class="relative h-64">
+                        <canvas id="caloriesChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- График БЖУ -->
+                <div class="bg-white rounded-lg shadow-md p-6 animate-slide-up delay-300">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">Соотношение БЖУ</h3>
+                    <div class="relative h-64">
+                        <canvas id="macrosChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js подключение -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="/js/reports.js"></script>
+</main>
+
+</html> 

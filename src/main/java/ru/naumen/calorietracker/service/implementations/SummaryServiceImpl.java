@@ -23,8 +23,10 @@ public class SummaryServiceImpl implements SummaryService {
     }
 
     @Override
-    public DaySummaryResponse getDaySummary(DaySummaryRequest request) {
-        DaySummaryId id = daySummaryMapper.toId(request);
+    public DaySummaryResponse getDaySummary(Integer userId, DaySummaryRequest request) {
+        DaySummaryId id = new DaySummaryId();
+        id.setUserId(userId);
+        id.setDate(request.date());
         DaySummary daySummary = daySummaryRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Отчет за дату \"%s\" не найден!".formatted(id.getDate()))
         );
@@ -32,9 +34,9 @@ public class SummaryServiceImpl implements SummaryService {
     }
 
     @Override
-    public List<DaySummaryResponse> getPeriodSummary(PeriodSummaryRequest request) {
+    public List<DaySummaryResponse> getPeriodSummary(Integer userId, PeriodSummaryRequest request) {
         List<DaySummary> daySummaries = daySummaryRepository
-                .findAllByUserIdAndDateBetween(request.userId(), request.startPeriod(), request.endPeriod());
+                .findAllByUserIdAndDateBetween(userId, request.startPeriod(), request.endPeriod());
         return daySummaryMapper.toResponseList(daySummaries);
     }
 }

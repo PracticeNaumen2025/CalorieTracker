@@ -50,7 +50,7 @@ class SummaryServiceTest {
     void setUp() {
         userId = 1;
         date = LocalDate.of(2025, 6, 21);
-        dayRequest = new DaySummaryRequest(userId, date);
+        dayRequest = new DaySummaryRequest(date);
         summaryId = new DaySummaryId();
         summaryId.setUserId(userId);
         summaryId.setDate(date);
@@ -59,7 +59,7 @@ class SummaryServiceTest {
 
         start = LocalDate.of(2025, 6, 1);
         end = LocalDate.of(2025, 6, 21);
-        periodRequest = new PeriodSummaryRequest(userId, start, end);
+        periodRequest = new PeriodSummaryRequest(start, end);
         periodSummaries = List.of(new DaySummary(), new DaySummary());
         expectedResponses = List.of(
                 new DaySummaryResponse(start, 100.0, 10.0, 10.0, 10.0),
@@ -69,11 +69,10 @@ class SummaryServiceTest {
 
     @Test
     void getDaySummary_ShouldReturnDaySummary() {
-        when(daySummaryMapper.toId(dayRequest)).thenReturn(summaryId);
         when(daySummaryRepository.findById(summaryId)).thenReturn(Optional.of(summary));
         when(daySummaryMapper.toResponse(summary)).thenReturn(expectedResponse);
 
-        DaySummaryResponse actual = summaryService.getDaySummary(dayRequest);
+        DaySummaryResponse actual = summaryService.getDaySummary(userId, dayRequest);
 
         assertEquals(expectedResponse, actual);
         verify(daySummaryMapper).toResponse(summary);
@@ -82,11 +81,10 @@ class SummaryServiceTest {
 
     @Test
     void getDaySummary_ShouldThrowException_WhenNotFound() {
-        when(daySummaryMapper.toId(dayRequest)).thenReturn(summaryId);
         when(daySummaryRepository.findById(summaryId)).thenReturn(Optional.empty());
 
         RuntimeException ex = assertThrows(RuntimeException.class,
-                () -> summaryService.getDaySummary(dayRequest));
+                () -> summaryService.getDaySummary(userId, dayRequest));
         assertEquals("Отчет за дату \"2025-06-21\" не найден!", ex.getMessage());
     }
 
@@ -96,7 +94,7 @@ class SummaryServiceTest {
                 .thenReturn(periodSummaries);
         when(daySummaryMapper.toResponseList(periodSummaries)).thenReturn(expectedResponses);
 
-        List<DaySummaryResponse> result = summaryService.getPeriodSummary(periodRequest);
+        List<DaySummaryResponse> result = summaryService.getPeriodSummary(userId, periodRequest);
 
         assertEquals(expectedResponses, result);
         verify(daySummaryRepository).findAllByUserIdAndDateBetween(userId, start, end);

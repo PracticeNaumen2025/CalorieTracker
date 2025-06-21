@@ -25,4 +25,9 @@ public class HomeController {
     public String profileView() {
         return "profile";
     }
+
+    @GetMapping("/reports")
+    public String reportsView() {
+        return "reports";
+    }
 }
