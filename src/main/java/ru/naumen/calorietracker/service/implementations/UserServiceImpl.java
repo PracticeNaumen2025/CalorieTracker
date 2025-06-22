@@ -1,6 +1,8 @@
 package ru.naumen.calorietracker.service.implementations;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.naumen.calorietracker.dto.UserRegisterRequest;
 import ru.naumen.calorietracker.dto.UserResponse;
+import ru.naumen.calorietracker.dto.UserUpdateRequest;
 import ru.naumen.calorietracker.exception.UserAlreadyExistsException;
 import ru.naumen.calorietracker.mapper.UserMapper;
 import ru.naumen.calorietracker.model.Role;
@@ -44,12 +47,40 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "userProfile", key = "#username")
     @Transactional(readOnly = true)
     public UserResponse getUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         "Пользователь с юзернеймом \"%s\" не найден".formatted(username)));
         return userMapper.toUserResponse(user);
+    }
+
+    @Override
+    @CacheEvict(value = "userProfile", key = "#username")
+    @Transactional
+    public UserResponse updateUserProfile(String username, UserUpdateRequest updateRequest) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + username));
+
+        if (updateRequest.getDateOfBirth() != null) {
+            user.setDateOfBirth(updateRequest.getDateOfBirth());
+        }
+        if (updateRequest.getGender() != null) {
+            user.setGender(updateRequest.getGender());
+        }
+        if (updateRequest.getHeightCm() != null) {
+            user.setHeightCm(updateRequest.getHeightCm());
+        }
+        if (updateRequest.getWeightKg() != null) {
+            user.setWeightKg(updateRequest.getWeightKg());
+        }
+        if (updateRequest.getActivityLevel() != null) {
+            user.setActivityLevel(updateRequest.getActivityLevel());
+        }
+
+        User updatedUser = userRepository.save(user);
+        return userMapper.toUserResponse(updatedUser);
     }
 
     private void assignDefaultRole(User user) {
