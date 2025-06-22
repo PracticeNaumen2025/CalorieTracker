@@ -2,12 +2,14 @@ package ru.naumen.calorietracker.service.implementations;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.naumen.calorietracker.dto.*;
 import ru.naumen.calorietracker.model.FoodEntry;
 import ru.naumen.calorietracker.model.Meal;
 import ru.naumen.calorietracker.model.User;
 import ru.naumen.calorietracker.service.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -75,5 +77,35 @@ public class DiaryServiceImpl implements DiaryService {
         return meals.stream()
                 .map(meal -> new MealDTO(meal.getMealId(), meal.getDateTime(), meal.getMealType()))
                 .toList();
+    }
+
+    @Override
+    public FoodEntryDTO updateFoodEntryPortion(Integer entryId, BigDecimal newPortionGrams, User user) {
+        return foodEntryService.updatePortionGrams(entryId, newPortionGrams, user);
+    }
+
+    @Override
+    public void deleteFoodEntry(Integer entryId, User user) {
+        foodEntryService.deleteFoodEntry(entryId, user);
+    }
+
+    @Override
+    @Transactional
+    public void deleteMeal(Integer mealId, User user) {
+        Meal meal = mealService.getMealById(mealId);
+
+        if (!meal.getUser().getUserId().equals(user.getUserId())) {
+            throw new RuntimeException("У вас нет прав удалять этот приём пищи");
+        }
+
+        List<FoodEntry> foodEntries = foodEntryService.getFoodEntriesByMealId(mealId, user).stream()
+                .map(dto -> foodEntryService.getFoodEntryById(dto.getEntryId()))
+                .toList();
+
+        for (FoodEntry entry : foodEntries) {
+            foodEntryService.deleteFoodEntry(entry.getEntryId(), user);
+        }
+
+        mealService.deleteMeal(mealId);
     }
 }

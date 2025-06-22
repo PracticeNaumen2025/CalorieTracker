@@ -13,7 +13,6 @@ import ru.naumen.calorietracker.model.Product;
 import ru.naumen.calorietracker.model.User;
 import ru.naumen.calorietracker.repository.FoodEntryRepository;
 import ru.naumen.calorietracker.repository.MealRepository;
-import ru.naumen.calorietracker.service.DaySummaryService;
 import ru.naumen.calorietracker.service.FoodEntryService;
 
 import java.math.BigDecimal;
@@ -66,5 +65,46 @@ public class FoodEntryServiceImpl implements FoodEntryService {
     @Override
     public List<FoodEntry> getFoodEntriesByMeals(List<Meal> meals) {
         return foodEntryRepository.findByMealIn(meals);
+    }
+
+    @Override
+    @Transactional
+    public FoodEntryDTO updatePortionGrams(Integer entryId, BigDecimal newPortionGrams, User user) {
+        FoodEntry entry = foodEntryRepository.findById(entryId)
+                .orElseThrow(() -> new RuntimeException("Food entry not found with id: " + entryId));
+
+        if (!entry.getMeal().getUser().getUserId().equals(user.getUserId())) {
+            throw new RuntimeException("Access denied: entry does not belong to user");
+        }
+
+        entry.setPortionGrams(newPortionGrams);
+
+        BigDecimal factor = newPortionGrams.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        Product product = entry.getProduct();
+        entry.setCalories(product.getCaloriesPer100g().multiply(factor));
+        entry.setProteinG(product.getProteinPer100g().multiply(factor));
+        entry.setFatG(product.getFatPer100g().multiply(factor));
+        entry.setCarbsG(product.getCarbsPer100g().multiply(factor));
+
+        return foodEntryMapper.toFoodEntryDTO(foodEntryRepository.save(entry));
+    }
+
+    @Override
+    @Transactional
+    public void deleteFoodEntry(Integer entryId, User user) {
+        FoodEntry entry = foodEntryRepository.findById(entryId)
+                .orElseThrow(() -> new RuntimeException("Food entry not found with id: " + entryId));
+
+        if (!entry.getMeal().getUser().getUserId().equals(user.getUserId())) {
+            throw new RuntimeException("Access denied: entry does not belong to user");
+        }
+
+        foodEntryRepository.delete(entry);
+    }
+
+    @Override
+    public FoodEntry getFoodEntryById(Integer entryId) {
+        return foodEntryRepository.findById(entryId)
+                .orElseThrow(() -> new RuntimeException("FoodEntry not found with id: " + entryId));
     }
 }

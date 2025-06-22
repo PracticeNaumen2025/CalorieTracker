@@ -46,7 +46,17 @@ async function loadDiary() {
 
             mealCard.innerHTML = `
                 <div class="mb-4">
-                    <h2 class="text-2xl font-bold text-primary">${mealTypeMap[meal.mealType] || meal.mealType}</h2>
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-2xl font-bold text-primary">
+                            ${mealTypeMap[meal.mealType] || meal.mealType}
+                        </h2>
+                        <button onclick="confirmDeleteMeal(${meal.mealId})"
+                                class="text-black hover:text-red-600 p-1" title="Удалить приём пищи">
+                            <svg class="w-5 h-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+                                <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                            </svg>
+                        </button>
+                    </div>
                     <p class="text-sm text-gray-500 mt-1">Время приёма: <strong>${mealTime}</strong></p>
                 </div>
                 <ul class="divide-y divide-gray-200 text-sm">
@@ -59,6 +69,22 @@ async function loadDiary() {
                                     Калории: ${entry.calories} ккал<br>
                                     Б: ${entry.proteinG} г, Ж: ${entry.fatG} г, У: ${entry.carbsG} г
                                 </p>
+                            </div>
+                            
+                            <div class="flex gap-2">
+                                <button onclick="openEditFoodEntry(${entry.entryId}, ${entry.portionGrams})"
+                                        class="text-black hover:text-blue-800 p-1" title="Редактировать">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 -960 960 960" height="24" width="24">
+                                        <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/>
+                                    </svg>
+                                </button>
+                            
+                                <button onclick="confirmDeleteFoodEntry(${entry.entryId})"
+                                        class="text-black hover:text-red-600 p-1" title="Удалить">
+                                    <svg class="w-5 h-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+                                        <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                                    </svg>
+                                </button>
                             </div>
                         </li>
                     `).join("")}
@@ -265,4 +291,86 @@ document.addEventListener("DOMContentLoaded", () => {
         loadDiary(); // Загрузить дневник за сегодня
     }
 });
+
+
+function openEditFoodEntry(entryId, portionGrams) {
+    document.getElementById("editEntryId").value = entryId;
+    document.getElementById("editPortionGrams").value = portionGrams;
+    document.getElementById("editFoodEntryOverlay").classList.remove("hidden");
+}
+
+document.getElementById("closeEditOverlay").addEventListener("click", () => {
+    document.getElementById("editFoodEntryOverlay").classList.add("hidden");
+});
+
+document.getElementById("editFoodEntryForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const entryId = document.getElementById("editEntryId").value;
+    const portionGrams = document.getElementById("editPortionGrams").value;
+
+    try {
+        const res = await fetch("/api/diary/food-entries", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                entryId: parseInt(entryId),
+                portionGrams: parseFloat(portionGrams)
+            })
+        });
+
+        if (!res.ok) {
+            const msg = await res.text();
+            throw new Error(msg || "Ошибка при обновлении");
+        }
+
+        alert("Порция обновлена");
+        document.getElementById("editFoodEntryOverlay").classList.add("hidden");
+        loadDiary();
+    } catch (err) {
+        alert(err.message);
+        console.error(err);
+    }
+});
+
+async function confirmDeleteFoodEntry(entryId) {
+    if (!confirm("Вы действительно хотите удалить эту запись о еде?")) return;
+
+    try {
+        const res = await fetch(`/api/diary/food-entries/${entryId}`, {
+            method: "DELETE"
+        });
+
+        if (!res.ok) {
+            const msg = await res.text();
+            throw new Error(msg || "Ошибка при удалении");
+        }
+
+        alert("Еда удалена");
+        loadDiary();
+    } catch (err) {
+        alert(err.message);
+        console.error(err);
+    }
+}
+
+async function confirmDeleteMeal(mealId) {
+    if (!confirm("Удалить весь приём пищи и связанные записи?")) return;
+
+    try {
+        const res = await fetch(`/api/diary/meals/${mealId}`, {
+            method: "DELETE"
+        });
+
+        if (!res.ok) {
+            const msg = await res.text();
+            throw new Error(msg || "Ошибка при удалении приёма пищи");
+        }
+
+        alert("Приём пищи удалён");
+        loadDiary();
+    } catch (err) {
+        alert(err.message);
+        console.error(err);
+    }
+}
 

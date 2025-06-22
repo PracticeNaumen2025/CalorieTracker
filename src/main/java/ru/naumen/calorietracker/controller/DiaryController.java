@@ -82,4 +82,37 @@ public class DiaryController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PutMapping("/food-entries")
+    public ResponseEntity<?> updateFoodEntry(@RequestBody UpdatePortionRequest request, Principal principal) {
+        try {
+            User user = authUtils.getAuthenticatedUser(principal);
+            FoodEntryDTO updated = diaryService.updateFoodEntryPortion(request.entryId(), request.portionGrams(), user);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/food-entries/{entryId}")
+    public ResponseEntity<?> deleteFoodEntry(@PathVariable Integer entryId, Principal principal) {
+        try {
+            User user = authUtils.getAuthenticatedUser(principal);
+            diaryService.deleteFoodEntry(entryId, user);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/meals/{mealId}")
+    public ResponseEntity<?> deleteMeal(@PathVariable Integer mealId, Principal principal) {
+        try {
+            User user = authUtils.getAuthenticatedUser(principal);
+            diaryService.deleteMeal(mealId, user);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

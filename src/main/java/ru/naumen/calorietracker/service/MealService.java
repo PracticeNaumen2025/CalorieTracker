@@ -12,4 +12,5 @@ public interface MealService {
     MealDTO createMeal(User user, LocalDateTime dateTime, String mealType);
     Meal getMealById(Integer mealId);
     List<Meal> getMealsByUserAndDate(User user, LocalDate date);
+    void deleteMeal(Integer mealId);
 }
