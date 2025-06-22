@@ -10,6 +10,7 @@ import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserGoalMapper {
+
     UserGoal toEntity(UserGoalCreateRequest createRequest);
     UserGoalResponse toResponse(UserGoal userGoal);
     List<UserGoalResponse> toResponseList(List<UserGoal> goals);

@@ -51,14 +51,13 @@ public class UserGoalController extends BaseController {
         return userGoalService.getUserGoalsByUserId(ownerUserId, currentUserId);
     }
 
-    @GetMapping("/{ownerUserId}/active")
+    @GetMapping("/active")
     public UserGoalResponse getGoalByDate(
-            @PathVariable Integer ownerUserId,
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             Principal principal
     ) {
         Integer currentUserId = getUserIdFromPrincipal(principal);
-        return userGoalService.getUserGoalByUserIdAndDate(ownerUserId, currentUserId, date);
+        return userGoalService.getUserGoalByUserIdAndDate(currentUserId, currentUserId, date);
     }
 
     @DeleteMapping("/{goalId}")

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 public record UserGoalUpdateRequest(
         @PositiveOrZero(message = "id должен быть положительным!")
-        int id,
+        int goalId,
 
         LocalDate startDate,
 

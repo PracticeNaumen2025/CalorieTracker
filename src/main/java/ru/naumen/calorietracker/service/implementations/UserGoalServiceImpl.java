@@ -50,10 +50,10 @@ public class UserGoalServiceImpl implements UserGoalService {
     @Override
     public UserGoalResponse updateUserGoal(UserGoalUpdateRequest request, Integer userId) {
 
-        UserGoal userGoal = userGoalRepository.findById(request.id())
+        UserGoal userGoal = userGoalRepository.findById(request.goalId())
                 .orElseThrow(()->
                         new EntityNotFoundException("Цель с id %s не найдена"
-                                .formatted(request.id())));
+                                .formatted(request.goalId())));
         accessChecker.checkAccess(userGoal.getUser().getUserId(), userId);
         if(isOverlappingGoals(userId, request.startDate(), request.endDate())){
             throw new DateOverlapException("Период цели пересекается с существующими целями");
@@ -98,6 +98,7 @@ public class UserGoalServiceImpl implements UserGoalService {
                         new EntityNotFoundException("Цель с id %s не найдена"
                                 .formatted(goalId)));
         accessChecker.checkAccess(goal.getUser().getUserId(), userId);
+        userGoalRepository.delete(goal);
     }
 
     private boolean isOverlappingGoals(Integer userId, LocalDate startDate, LocalDate endDate){

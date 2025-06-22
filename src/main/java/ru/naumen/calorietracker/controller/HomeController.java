@@ -35,4 +35,9 @@ public class HomeController {
     public String diaryView() {
         return "diary";
     }
+
+    @GetMapping("/products")
+    public String productsView(){
+        return "products";
+    }
 }

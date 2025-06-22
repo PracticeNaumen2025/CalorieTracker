@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 15-add-updated-at-to-categories
+      author: gemini
+      changes:
+        - addColumn:
+            tableName: categories
+            columns:
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+                  constraints:
+                    nullable: true 

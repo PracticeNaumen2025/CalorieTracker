@@ -22,7 +22,6 @@ import java.util.List;
 public class ProductController extends BaseController {
 
     private final ProductService productService;
-    private final UserRepository userRepository;
     private final AuthUtils authUtils;
 
     @PostMapping("/add")

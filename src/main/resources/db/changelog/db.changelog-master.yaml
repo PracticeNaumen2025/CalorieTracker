@@ -27,3 +27,5 @@ databaseChangeLog:
       file: db/changelog/changes/12-create-indexes.yaml
   - include:
       file: db/changelog/changes/14-fix-products-table-product-id.yaml
+  - include:
+      file: db/changelog/changes/15-add-updated-at-to-categories.yaml
