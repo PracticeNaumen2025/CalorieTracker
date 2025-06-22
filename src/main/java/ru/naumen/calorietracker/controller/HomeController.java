@@ -30,4 +30,9 @@ public class HomeController {
     public String reportsView() {
         return "reports";
     }
+
+    @GetMapping("/diary")
+    public String diaryView() {
+        return "diary";
+    }
 }

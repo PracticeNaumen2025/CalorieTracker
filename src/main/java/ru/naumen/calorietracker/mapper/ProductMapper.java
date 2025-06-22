@@ -34,4 +34,6 @@ public interface ProductMapper {
     Product toProduct(ProductUpdateRequest request);
 
     List<ProductResponse> toProductResponseList(List<ProductSearchDocument> docs);
+
+    Product toProduct(ProductResponse productResponse);
 }

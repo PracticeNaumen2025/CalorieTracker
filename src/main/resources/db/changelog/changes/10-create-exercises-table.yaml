@@ -9,6 +9,7 @@ databaseChangeLog:
               - column:
                   name: exercise_id
                   type: INTEGER
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
               - column:

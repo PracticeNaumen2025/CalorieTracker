@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title layout:fragment="title">Дневник</title>
+</head>
+
+<body>
+<main layout:fragment="content" class="flex flex-col items-center justify-start min-h-[70vh] px-4 pt-12">
+    <div class="w-full max-w-4xl bg-white rounded-3xl shadow-lg p-8 animate-fade-in">
+        <h1 class="text-4xl font-extrabold text-primary mb-8 text-center">Дневник питания</h1>
+
+        <!-- Кнопки -->
+        <div class="flex justify-between mb-6">
+            <button id="addMealBtn"
+                    class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
+                Добавить приём пищи
+            </button>
+            <button id="addFoodEntryBtn"
+                    class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
+                Добавить еду к приёму
+            </button>
+        </div>
+
+        <!-- Ввод даты -->
+        <div class="flex items-center justify-center gap-4 mb-10">
+            <label for="dateInput" class="text-lg font-medium text-gray-700">Выберите дату:</label>
+            <input type="date" id="dateInput"
+                   class="border border-gray-300 rounded px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary">
+            <button onclick="loadDiary()"
+                    class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
+                Показать
+            </button>
+        </div>
+
+        <!-- Информационный текст -->
+        <div id="infoText" class="mb-6 text-center text-gray-600 text-md italic hidden">
+            Вот что вы в этот день употребили в пищу. Следите за балансом макронутриентов для поддержания здорового образа жизни.
+        </div>
+
+        <!-- Контейнер для приёмов пищи -->
+        <div id="mealsContainer" class="space-y-8">
+            <!-- Динамически заполняется -->
+        </div>
+
+        <!-- Информация за день -->
+        <div id="dailySummary" class="mt-10 p-6 bg-green-50 border border-green-200 rounded-xl shadow hidden">
+            <h2 class="text-xl font-bold text-green-700 mb-4">Итог за день</h2>
+            <p class="mb-4 text-gray-700 text-sm">
+                Ниже приведены суммарные данные по питанию за выбранный день. Используйте их для оценки вашего рациона и корректировки целей.
+            </p>
+            <ul class="text-sm text-gray-800 space-y-1">
+                <li><strong>Калории:</strong> <span id="sumCalories"></span> ккал</li>
+                <li><strong>Белки:</strong> <span id="sumProtein"></span> г</li>
+                <li><strong>Жиры:</strong> <span id="sumFat"></span> г</li>
+                <li><strong>Углеводы:</strong> <span id="sumCarbs"></span> г</li>
+            </ul>
+        </div>
+
+        <!-- Оверлей: Добавить приём пищи -->
+        <div id="mealOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+            <div class="bg-white rounded-xl p-8 max-w-md w-full shadow-lg relative">
+                <button id="closeOverlay" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+                <h2 class="text-2xl font-bold mb-6 text-primary text-center">Добавить приём пищи</h2>
+
+                <form id="mealForm" class="space-y-4">
+                    <div>
+                        <label for="mealType" class="block mb-1 font-medium">Тип приёма пищи</label>
+                        <select id="mealType" class="w-full border border-gray-300 rounded px-3 py-2" required>
+                            <option value="">Выберите тип</option>
+                            <option value="breakfast">Завтрак</option>
+                            <option value="lunch">Обед</option>
+                            <option value="dinner">Ужин</option>
+                            <option value="snack">Перекус</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="dateTime" class="block mb-1 font-medium">Дата и время</label>
+                        <input type="datetime-local" id="dateTime" class="w-full border border-gray-300 rounded px-3 py-2" required>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
+                            Создать
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Оверлей: Добавить еду -->
+        <div id="foodEntryOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+            <div class="bg-white rounded-xl p-8 max-w-md w-full shadow-lg relative">
+                <button id="closeFoodOverlay" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+                <h2 class="text-2xl font-bold mb-6 text-green-600 text-center">Добавить еду к приёму</h2>
+                <form id="foodEntryForm" class="space-y-4">
+                    <div>
+                        <label for="mealSelect" class="block mb-1 font-medium">Выберите приём пищи</label>
+                        <select id="mealSelect" class="w-full border border-gray-300 rounded px-3 py-2" required>
+                            <!-- Динамически заполняется -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="productSelect" class="block mb-1 font-medium">Выберите продукт</label>
+                        <select id="productSelect" class="w-full border border-gray-300 rounded px-3 py-2" required>
+                            <!-- Динамически заполняется -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="portionGrams" class="block mb-1 font-medium">Граммы</label>
+                        <input type="number" id="portionGrams" class="w-full border border-gray-300 rounded px-3 py-2" required>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition">
+                            Добавить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script src="/js/diary.js"></script>
+</main>
+</body>
+</html>
