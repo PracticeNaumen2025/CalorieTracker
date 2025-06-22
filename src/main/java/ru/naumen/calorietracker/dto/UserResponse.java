@@ -1,5 +1,6 @@
 package ru.naumen.calorietracker.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -10,4 +11,5 @@ public record UserResponse(
     String gender,
     BigDecimal heightCm,
     BigDecimal weightKg,
-    String activityLevel){}
+    String activityLevel
+) implements Serializable {}

@@ -41,4 +41,9 @@ public class MealServiceImpl implements MealService {
                 user, date.atStartOfDay(), date.atTime(23, 59, 59)
         );
     }
+
+    @Override
+    public void deleteMeal(Integer mealId) {
+        mealRepository.deleteById(mealId);
+    }
 }

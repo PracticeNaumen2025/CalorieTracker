@@ -13,4 +13,7 @@ public interface FoodEntryService {
     FoodEntryDTO addFoodEntry(Meal meal, ProductResponse productResponse, BigDecimal portionGrams);
     List<FoodEntryDTO> getFoodEntriesByMealId(Integer mealId, User user);
     List<FoodEntry> getFoodEntriesByMeals(List<Meal> meals);
+    FoodEntryDTO updatePortionGrams(Integer entryId, BigDecimal newPortionGrams, User user);
+    void deleteFoodEntry(Integer entryId, User user);
+    FoodEntry getFoodEntryById(Integer entryId);
 }

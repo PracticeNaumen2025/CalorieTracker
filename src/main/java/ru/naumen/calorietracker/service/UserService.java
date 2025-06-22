@@ -3,6 +3,7 @@ package ru.naumen.calorietracker.service;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import ru.naumen.calorietracker.dto.UserRegisterRequest;
 import ru.naumen.calorietracker.dto.UserResponse;
+import ru.naumen.calorietracker.dto.UserUpdateRequest;
 
 public interface UserService extends UserDetailsService {
     /**
@@ -11,4 +12,6 @@ public interface UserService extends UserDetailsService {
     UserResponse register(UserRegisterRequest request);
 
     UserResponse getUserByUsername(String username);
+
+    UserResponse updateUserProfile(String username, UserUpdateRequest updateRequest);
 }
