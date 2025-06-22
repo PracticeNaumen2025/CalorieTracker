@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/api/products")
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
-public class ProductController {
+public class ProductController extends BaseController {
 
     private final ProductService productService;
     private final UserRepository userRepository;
@@ -83,17 +83,5 @@ public class ProductController {
     @GetMapping("/search")
     public List<ProductResponse> search(@RequestParam String name) {
         return productService.searchByName(name);
-    }
-
-    private void checkAuthentication(Principal principal) {
-        if (principal == null) {
-            throw new RuntimeException("Пользователь не аутентифицирован");
-        }
-    }
-
-    private User getAuthenticatedUser(Principal principal) {
-        checkAuthentication(principal);
-        return userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
     }
 }
