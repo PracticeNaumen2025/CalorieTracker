@@ -2,9 +2,12 @@ package ru.naumen.calorietracker.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.naumen.calorietracker.dto.PageResponse;
 import ru.naumen.calorietracker.dto.UserGoalCreateRequest;
 import ru.naumen.calorietracker.dto.UserGoalResponse;
 import ru.naumen.calorietracker.dto.UserGoalUpdateRequest;
@@ -12,7 +15,6 @@ import ru.naumen.calorietracker.service.UserGoalService;
 
 import java.security.Principal;
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/goals")
@@ -43,12 +45,15 @@ public class UserGoalController extends BaseController {
     }
 
     @GetMapping("/{ownerUserId}")
-    public List<UserGoalResponse> getGoals(
+    public PageResponse<UserGoalResponse> getGoals(
             @PathVariable Integer ownerUserId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
             Principal principal
     ) {
         Integer currentUserId = getUserIdFromPrincipal(principal);
-        return userGoalService.getUserGoalsByUserId(ownerUserId, currentUserId);
+        Pageable pageable = PageRequest.of(page, size);
+        return userGoalService.getUserGoalsByUserId(ownerUserId, currentUserId, pageable);
     }
 
     @GetMapping("/active")

@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import ru.naumen.calorietracker.dto.UserRegisterRequest;
 import ru.naumen.calorietracker.dto.UserResponse;
 import ru.naumen.calorietracker.dto.UserUpdateRequest;
@@ -16,8 +17,11 @@ import ru.naumen.calorietracker.mapper.UserMapper;
 import ru.naumen.calorietracker.model.Role;
 import ru.naumen.calorietracker.model.User;
 import ru.naumen.calorietracker.repository.UserRepository;
+import ru.naumen.calorietracker.service.MinioService;
 import ru.naumen.calorietracker.service.RoleService;
 import ru.naumen.calorietracker.service.UserService;
+
+import java.io.IOException;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -25,13 +29,21 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
+    private final MinioService minioService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, RoleService roleService) {
+    public UserServiceImpl(
+            UserRepository userRepository,
+            UserMapper userMapper,
+            PasswordEncoder passwordEncoder,
+            RoleService roleService,
+            MinioService minioService
+    ) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
+        this.minioService = minioService;
     }
 
     @Override
@@ -81,6 +93,24 @@ public class UserServiceImpl implements UserService {
 
         User updatedUser = userRepository.save(user);
         return userMapper.toUserResponse(updatedUser);
+    }
+
+    @Override
+    @CacheEvict(value = "userProfile", key = "#username")
+    @Transactional
+    public UserResponse updateUserPhoto(String username, MultipartFile file) throws IOException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + username));
+
+        if (user.getPhotoUrl() != null && !user.getPhotoUrl().isBlank()) {
+            minioService.deleteIconFile(user.getPhotoUrl());
+        }
+
+        String url = minioService.storeIconFile(file);
+        user.setPhotoUrl(url);
+
+        User updated = userRepository.save(user);
+        return userMapper.toUserResponse(updated);
     }
 
     private void assignDefaultRole(User user) {

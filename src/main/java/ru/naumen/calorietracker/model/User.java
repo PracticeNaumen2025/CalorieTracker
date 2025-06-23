@@ -31,6 +31,9 @@ public class User implements UserDetails {
     @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
 
+    @Column(name = "photo_url", length = 255)
+    private String photoUrl;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",

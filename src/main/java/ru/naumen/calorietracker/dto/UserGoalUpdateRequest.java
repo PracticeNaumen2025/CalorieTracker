@@ -5,6 +5,7 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 public record UserGoalUpdateRequest(
@@ -29,7 +30,7 @@ public record UserGoalUpdateRequest(
 
         @PositiveOrZero(message = "Процент углеводов должен быть положительным!")
         double carbPercentage
-) {
+) implements Serializable {
     @AssertTrue(message = "Дата начала должна быть меньше или равна дате окончания")
     @JsonIgnore
     public boolean isStartDateBeforeOrEqualEndDate() {

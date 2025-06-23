@@ -1,5 +1,6 @@
 package ru.naumen.calorietracker.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 public record UserGoalResponse(
@@ -11,4 +12,4 @@ public record UserGoalResponse(
         double proteinPercentage,
         double fatPercentage,
         double carbPercentage
-) { }
+) implements Serializable { }

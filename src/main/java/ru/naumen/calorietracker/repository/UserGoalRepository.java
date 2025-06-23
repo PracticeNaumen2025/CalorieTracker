@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.naumen.calorietracker.model.UserGoal;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,7 +24,7 @@ public interface UserGoalRepository extends JpaRepository<UserGoal, Integer> {
             @Param("startDate") LocalDate startDate,
             @Param("endDate")   LocalDate endDate
     );
-    List<UserGoal> findByUserUserId(Integer ownerUserId);
+    Page<UserGoal> findByUserUserIdOrderByStartDateAsc(Integer ownerUserId, Pageable pageable);
 
     @Query("""
         select g

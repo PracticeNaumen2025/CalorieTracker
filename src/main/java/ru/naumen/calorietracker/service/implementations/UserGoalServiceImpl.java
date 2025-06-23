@@ -1,10 +1,17 @@
 package ru.naumen.calorietracker.service.implementations;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.naumen.calorietracker.dto.PageResponse;
 import ru.naumen.calorietracker.dto.UserGoalCreateRequest;
 import ru.naumen.calorietracker.dto.UserGoalResponse;
 import ru.naumen.calorietracker.dto.UserGoalUpdateRequest;
 import ru.naumen.calorietracker.exception.DateOverlapException;
 import ru.naumen.calorietracker.exception.EntityNotFoundException;
+import ru.naumen.calorietracker.mapper.PageResponseMapper;
 import ru.naumen.calorietracker.mapper.UserGoalMapper;
 import ru.naumen.calorietracker.model.User;
 import ru.naumen.calorietracker.model.UserGoal;
@@ -32,6 +39,10 @@ public class UserGoalServiceImpl implements UserGoalService {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "userGoals", key = "#userId"),
+            @CacheEvict(value = "userActiveGoal", key = "#userId")
+    })
     public UserGoalResponse createUserGoal(UserGoalCreateRequest request, Integer userId) {
         accessChecker.checkAccess(request.userId(), userId);
         User user = userRepository.findById(request.userId())
@@ -48,6 +59,10 @@ public class UserGoalServiceImpl implements UserGoalService {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "userGoals", key = "#userId"),
+            @CacheEvict(value = "userActiveGoal", key = "#userId")
+    })
     public UserGoalResponse updateUserGoal(UserGoalUpdateRequest request, Integer userId) {
 
         UserGoal userGoal = userGoalRepository.findById(request.goalId())
@@ -71,6 +86,7 @@ public class UserGoalServiceImpl implements UserGoalService {
     }
 
     @Override
+    @Cacheable(value = "userActiveGoal", key = "#ownerUserId")
     public UserGoalResponse getUserGoalByUserIdAndDate(Integer ownerUserId, Integer currentUserId, LocalDate date) {
         accessChecker.checkAccess(ownerUserId, currentUserId);
         UserGoal goal = userGoalRepository.findActiveGoalByDate(ownerUserId, date)
@@ -84,14 +100,23 @@ public class UserGoalServiceImpl implements UserGoalService {
     }
 
     @Override
-    public List<UserGoalResponse> getUserGoalsByUserId(Integer ownerUserId, Integer currentUserId) {
+    public PageResponse<UserGoalResponse> getUserGoalsByUserId(
+            Integer ownerUserId,
+            Integer currentUserId,
+            Pageable pageable
+    ) {
         accessChecker.checkAccess(ownerUserId, currentUserId);
-        List<UserGoal> goals = userGoalRepository.findByUserUserId(ownerUserId);
+        Page<UserGoal> goalsPage = userGoalRepository.findByUserUserIdOrderByStartDateAsc(ownerUserId, pageable);
+        Page<UserGoalResponse> responsePage = goalsPage.map(userGoalMapper::toResponse);
 
-        return userGoalMapper.toResponseList(goals);
+        return PageResponseMapper.toPageResponse(responsePage);
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "userGoals", key = "#userId"),
+            @CacheEvict(value = "userActiveGoal", key = "#userId")
+    })
     public void deleteUserGoalByUserId(Integer userId, Integer goalId) {
         UserGoal goal = userGoalRepository.findById(goalId)
                 .orElseThrow(()->
