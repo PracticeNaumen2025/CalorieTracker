@@ -9,8 +9,6 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.time.Instant;
-
 @Document(indexName = "categories")
 @Data
 @NoArgsConstructor
@@ -23,7 +21,4 @@ public class CategorySearchDocument {
 
     @Field(name = "category_name", type = FieldType.Text, analyzer = "standard")
     private String categoryName;
-
-    @Field(name = "updated_at", type = FieldType.Date)
-    private Instant updatedAt;
 }

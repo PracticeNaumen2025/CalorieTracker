@@ -24,9 +24,10 @@ public class CategoryController {
     @GetMapping
     public Page<CategoryResponse> findCategoriesByNamePrefix(
             @RequestParam String name,
-            @PageableDefault(page = 0, size = 10, sort = {})
+            @PageableDefault(page = 0, size = 10)
             Pageable pageable
     ) {
-        return categoryService.searchCategories(name, pageable);
+        Pageable noSortPageable = Pageable.ofSize(pageable.getPageSize()).withPage(pageable.getPageNumber());
+        return categoryService.searchCategories(name, noSortPageable);
     }
 }

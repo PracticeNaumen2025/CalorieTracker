@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let categoryPage = 0;
     let categoryTotalPages = 1;
     let lastCategorySearch = '';
-    const CATEGORY_API_URL = '/api/categories';
+    const CATEGORY_API_URL = '/api/category';
 
     /**
      * Отображает продукты в виде карточек.
@@ -125,15 +125,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const renderCategoryDropdown = (categories, totalPages, page) => {
         categoryDropdown.innerHTML = '';
         if (!categories || categories.length === 0) {
-            categoryDropdown.innerHTML = `<div class='px-4 py-2 text-gray-500'>Ничего не найдено</div>`;
+            categoryDropdown.innerHTML = `<div class='px-4 py-2 text-gray-500 w-full truncate rounded-md'>Ничего не найдено</div>`;
         } else {
             categories.forEach(cat => {
                 const item = document.createElement('div');
                 item.className = 'px-4 py-2 hover:bg-primary hover:text-white cursor-pointer';
-                item.textContent = cat.name;
+                item.textContent = cat.categoryName;
                 item.addEventListener('click', () => {
                     selectedCategory = cat;
-                    categorySearch.value = cat.name;
+                    categorySearch.value = cat.categoryName;
                     categoryDropdown.classList.add('hidden');
                 });
                 categoryDropdown.appendChild(item);
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function() {
             proteinPer100g: parseFloat(document.getElementById('protein').value),
             fatPer100g: parseFloat(document.getElementById('fat').value),
             carbsPer100g: parseFloat(document.getElementById('carbs').value),
-            categoryId: selectedCategory.id
+            categoryId: selectedCategory.categoryId
         };
         fetch(`${API_URL}/add`, {
             method: 'POST',
