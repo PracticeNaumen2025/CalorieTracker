@@ -23,6 +23,17 @@ document.addEventListener('DOMContentLoaded', function() {
     let lastCategorySearch = '';
     const CATEGORY_API_URL = '/api/category';
 
+    let currentUserId = null;
+    let isAdmin = false;
+
+    // Получаем userId и isAdmin при загрузке страницы
+    fetch('/api/user/current')
+      .then(r => r.json())
+      .then(id => { currentUserId = id; });
+    fetch('/api/user/is_admin')
+      .then(r => r.json())
+      .then(flag => { isAdmin = flag; });
+
     /**
      * Отображает продукты в виде карточек.
      * @param {Array<Object>} products - Массив объектов продуктов.
@@ -36,8 +47,15 @@ document.addEventListener('DOMContentLoaded', function() {
         products.forEach(product => {
             const card = document.createElement('div');
             card.className = 'bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300';
-            card.innerHTML = `
-                <h3 class="text-xl font-bold text-gray-800 mb-2">${product.name}</h3>
+            
+            const headerHTML = `
+                <div class="flex justify-between items-start gap-4 mb-2">
+                    <h3 class="text-xl font-bold text-gray-800 break-words line-clamp-2" title="${product.name}">${product.name}</h3>
+                    <div class="actions-container flex-shrink-0 flex gap-1"></div>
+                </div>
+            `;
+            
+            const bodyHTML = `
                 <div class="mb-4 text-gray-600">Калорийность: ${product.caloriesPer100g} ккал</div>
                 <div class="grid grid-cols-3 gap-2 text-center text-sm mb-2">
                     <div class="bg-emerald-100 text-emerald-800 rounded-full px-2 py-1">Б: ${product.proteinPer100g}г</div>
@@ -46,6 +64,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="text-xs text-gray-400">Категория: ${product.categoryName || '-'}</div>
             `;
+            
+            card.innerHTML = headerHTML + bodyHTML;
+
+            if ((product.userId && product.userId === currentUserId) || isAdmin) {
+                const actionsContainer = card.querySelector('.actions-container');
+                
+                const editBtn = document.createElement('button');
+                editBtn.title = 'Редактировать';
+                editBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 -960 960 960"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>`;
+                editBtn.className = 'text-black hover:text-blue-800 p-1';
+                editBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openEditModal(product);
+                });
+                actionsContainer.appendChild(editBtn);
+
+                if (isAdmin) {
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.title = 'Удалить';
+                    deleteBtn.innerHTML = `<svg class="w-5 h-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>`;
+                    deleteBtn.className = 'text-black hover:text-red-600 p-1';
+                    deleteBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        confirmDeleteProduct(product.productId);
+                    });
+                    actionsContainer.appendChild(deleteBtn);
+                }
+            }
             productList.appendChild(card);
         });
     };
@@ -216,13 +262,59 @@ document.addEventListener('DOMContentLoaded', function() {
             carbsPer100g: parseFloat(document.getElementById('carbs').value),
             categoryId: selectedCategory.categoryId
         };
-        fetch(`${API_URL}/add`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(product)
-        }).then(r => {
-            closeModal();
-            fetchProducts(lastSearch, currentPage);
+        const productId = document.getElementById('productId').value;
+        if (productId) {
+            // Редактирование
+            fetch(`${API_URL}/${productId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(product)
+            }).then(r => {
+                closeModal();
+                fetchProducts(lastSearch, currentPage);
+            });
+        } else {
+            // Добавление
+            fetch(`${API_URL}/add`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(product)
+            }).then(r => {
+                closeModal();
+                fetchProducts(lastSearch, currentPage);
+            });
+        }
+    }
+
+    // Открытие модального окна для редактирования
+    function openEditModal(product) {
+        modalTitle.textContent = 'Редактировать продукт';
+        productModal.classList.remove('hidden');
+        productModal.classList.add('flex');
+        document.getElementById('productId').value = product.productId;
+        document.getElementById('name').value = product.name;
+        document.getElementById('calories').value = product.caloriesPer100g;
+        document.getElementById('protein').value = product.proteinPer100g;
+        document.getElementById('fat').value = product.fatPer100g;
+        document.getElementById('carbs').value = product.carbsPer100g;
+        selectedCategory = { categoryId: product.categoryId, categoryName: product.categoryName };
+        categorySearch.value = product.categoryName || '';
+        categoryDropdown.classList.add('hidden');
+    }
+
+    // Удаление продукта (только для админа)
+    function confirmDeleteProduct(productId) {
+        if (!confirm('Вы действительно хотите удалить этот продукт?')) return;
+        fetch(`/api/products/${productId}`, {
+            method: 'DELETE'
+        }).then(async r => {
+            if (!r.ok) {
+                const msg = await r.text();
+                alert(msg || 'Ошибка при удалении');
+            } else {
+                alert('Продукт удалён');
+                fetchProducts(lastSearch, currentPage);
+            }
         });
     }
 
