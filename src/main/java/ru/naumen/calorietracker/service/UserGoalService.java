@@ -1,5 +1,8 @@
 package ru.naumen.calorietracker.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import ru.naumen.calorietracker.dto.PageResponse;
 import ru.naumen.calorietracker.dto.UserGoalCreateRequest;
 import ru.naumen.calorietracker.dto.UserGoalResponse;
 import ru.naumen.calorietracker.dto.UserGoalUpdateRequest;
@@ -11,6 +14,6 @@ public interface UserGoalService {
     UserGoalResponse createUserGoal(UserGoalCreateRequest request, Integer userId);
     UserGoalResponse updateUserGoal(UserGoalUpdateRequest request, Integer userId);
     UserGoalResponse getUserGoalByUserIdAndDate(Integer ownerUserId, Integer currentUserId, LocalDate date);
-    List<UserGoalResponse> getUserGoalsByUserId(Integer ownerUserId, Integer currentUserId);
+    PageResponse<UserGoalResponse> getUserGoalsByUserId(Integer ownerUserId, Integer currentUserId, Pageable pageable);
     void deleteUserGoalByUserId(Integer userId, Integer goalId);
 }

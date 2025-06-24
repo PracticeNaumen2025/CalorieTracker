@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 16-add-user-photo-url
+      author: Denis
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: photo_url
+                  type: VARCHAR(255)
