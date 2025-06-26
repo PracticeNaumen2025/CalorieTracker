@@ -60,4 +60,14 @@ public class HomeController {
     public String adminExercisesView(){
         return "admin-exercises";
     }
+
+    @GetMapping("/exercises")
+    public String exercisesView() {
+        return "exercises";
+    }
+
+    @GetMapping("/manage_exercises")
+    public String manage_exercisesView(){
+        return "manage_exercises";
+    }
 }

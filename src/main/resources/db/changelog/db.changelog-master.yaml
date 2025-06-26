@@ -31,3 +31,5 @@ databaseChangeLog:
       file: db/changelog/changes/15-add-updated-at-to-categories.yaml
   - include:
       file: db/changelog/changes/16-add-user-photo-url.yaml
+  - include:
+      file: db/changelog/changes/17-add-updated-at-and-creator-to-exercises.yaml
