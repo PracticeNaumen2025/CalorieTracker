@@ -55,7 +55,7 @@ public class ExerciseEntryServiceImpl implements ExerciseEntryService {
 
         entry.setExercise(exercise);
         entry.setUser(user);
-        entry.setCaloriesBurned(BigDecimal.valueOf(request.getDurationMinutes()/60.0 * exercise.getExerciseId()));
+        entry.setCaloriesBurned(BigDecimal.valueOf(request.getDurationMinutes()/60.0).multiply(exercise.getCaloriesPerHour()));
         ExerciseEntry saved = exerciseEntryRepository.save(entry);
         return exerciseEntryMapper.toResponse(saved);
     }
@@ -71,7 +71,7 @@ public class ExerciseEntryServiceImpl implements ExerciseEntryService {
         entry.setExercise(exercise);
         entry.setDateTime(request.getDateTime());
         entry.setDurationMinutes(request.getDurationMinutes());
-        entry.setCaloriesBurned(BigDecimal.valueOf(request.getDurationMinutes()/60.0 * exercise.getExerciseId()));
+        entry.setCaloriesBurned(BigDecimal.valueOf(request.getDurationMinutes()/60.0).multiply(exercise.getCaloriesPerHour()));
         ExerciseEntry saved = exerciseEntryRepository.save(entry);
         return exerciseEntryMapper.toResponse(saved);
     }
