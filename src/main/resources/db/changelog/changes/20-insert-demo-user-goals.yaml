@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20-insert-demo-user-goals
+      author: Denis
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO usergoals (user_id, start_date, end_date, target_weight_kg, daily_calorie_goal, protein_percentage, fat_percentage, carb_percentage)
+              SELECT u.user_id, '2025-06-01', '2026-08-01', 75.0, 2200, 30.0, 25.0, 45.0
+              FROM users u
+              WHERE u.username = 'admin';
+
+              INSERT INTO usergoals (user_id, start_date, end_date, target_weight_kg, daily_calorie_goal, protein_percentage, fat_percentage, carb_percentage)
+              SELECT u.user_id, '2025-06-01', '2026-08-01', 60.0, 1800, 25.0, 30.0, 45.0
+              FROM users u
+              WHERE u.username = 'user';

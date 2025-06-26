@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 18-insert-demo-users
+      author: Denis
+      changes:
+        - loadData:
+            file: db/changelog/data/demo-users.csv
+            tableName: users
+            separator: ","
+            encoding: UTF-8
+            quotchar: '"'

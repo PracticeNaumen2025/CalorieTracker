@@ -33,3 +33,17 @@ databaseChangeLog:
       file: db/changelog/changes/16-add-user-photo-url.yaml
   - include:
       file: db/changelog/changes/17-add-updated-at-and-creator-to-exercises.yaml
+  - include:
+      file: db/changelog/changes/18-insert-demo-users.yaml
+  - include:
+      file: db/changelog/changes/19-insert-demo-users-roles.yaml
+  - include:
+      file: db/changelog/changes/20-insert-demo-user-goals.yaml
+  - include:
+      file: db/changelog/changes/21-insert-demo-categories.yaml
+  - include:
+      file: db/changelog/changes/22-insert-demo-products.yaml
+  - include:
+      file: db/changelog/changes/23-insert-demo-exercises.yaml
+  - include:
+      file: db/changelog/changes/24-insert-demo-user-measurements.yaml

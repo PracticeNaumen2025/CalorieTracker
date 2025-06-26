@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 19-insert-demo-users-roles
+      author: Denis
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO users_roles (user_id, role_id)
+              SELECT u.user_id, r.role_id
+              FROM users u, roles r
+              WHERE (u.username = 'admin' AND r.role_name = 'ADMIN')
+                 OR (u.username = 'user' AND r.role_name = 'USER');

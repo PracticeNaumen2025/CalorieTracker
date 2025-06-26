@@ -1,0 +1,74 @@
+databaseChangeLog:
+  - changeSet:
+      id: 21-insert-demo-categories
+      author: Denis
+      changes:
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: category_name
+                  value: Крупы
+              - column:
+                  name: updated_at
+                  valueDate: 2025-06-26T00:00:00
+
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: category_name
+                  value: Первые блюда
+              - column:
+                  name: updated_at
+                  valueDate: 2025-06-26T00:00:00
+
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: category_name
+                  value: Гарниры
+              - column:
+                  name: updated_at
+                  valueDate: 2025-06-26T00:00:00
+
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: category_name
+                  value: Овощи
+              - column:
+                  name: updated_at
+                  valueDate: 2025-06-26T00:00:00
+
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: category_name
+                  value: Мясо
+              - column:
+                  name: updated_at
+                  valueDate: 2025-06-26T00:00:00
+
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: category_name
+                  value: Молочные продукты
+              - column:
+                  name: updated_at
+                  valueDate: 2025-06-26T00:00:00
+
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: category_name
+                  value: Фрукты
+              - column:
+                  name: updated_at
+                  valueDate: 2025-06-26T00:00:00

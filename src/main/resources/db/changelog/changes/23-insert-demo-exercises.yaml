@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 23-insert-demo-exercises
+      author: Denis
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO exercises (name, calories_per_hour, created_by_user_id, updated_at)
+              SELECT name, calories, u.user_id, NOW()
+              FROM (
+                VALUES 
+                  ('Бег', 600.00),
+                  ('Плавание', 500.00),
+                  ('Велоспорт', 450.00),
+                  ('Ходьба', 250.00),
+                  ('Йога', 200.00),
+                  ('Силовые тренировки', 400.00)
+              ) AS e(name, calories)
+              CROSS JOIN users u
+              WHERE u.username = 'admin';

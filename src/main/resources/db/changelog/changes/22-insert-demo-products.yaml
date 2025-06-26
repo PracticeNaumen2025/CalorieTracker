@@ -1,0 +1,86 @@
+databaseChangeLog:
+  - changeSet:
+      id: 22-insert-demo-products
+      author: Denis
+      changes:
+        - sql:
+            sql: |
+              -- Гречка
+              INSERT INTO products (
+                name, calories_per_100g, protein_per_100g, fat_per_100g, carbs_per_100g,
+                category_id, created_by_user_id, is_deleted, created_at, updated_at
+              )
+              SELECT 
+                'Гречка', 343.00, 13.00, 3.40, 72.00, c.category_id, u.user_id, false, NOW(), NOW()
+              FROM categories c, users u 
+              WHERE c.category_name = 'Крупы' AND u.username = 'admin';
+
+              -- Рис отварной
+              INSERT INTO products (
+                name, calories_per_100g, protein_per_100g, fat_per_100g, carbs_per_100g,
+                category_id, created_by_user_id, is_deleted, created_at, updated_at
+              )
+              SELECT 
+                'Рис отварной', 130.00, 2.70, 0.30, 28.00, c.category_id, u.user_id, false, NOW(), NOW()
+              FROM categories c, users u 
+              WHERE c.category_name = 'Гарниры' AND u.username = 'admin';
+
+              -- Суп куриный
+              INSERT INTO products (
+                name, calories_per_100g, protein_per_100g, fat_per_100g, carbs_per_100g,
+                category_id, created_by_user_id, is_deleted, created_at, updated_at
+              )
+              SELECT 
+                'Суп куриный', 50.00, 3.00, 2.00, 4.00, c.category_id, u.user_id, false, NOW(), NOW()
+              FROM categories c, users u 
+              WHERE c.category_name = 'Первые блюда' AND u.username = 'admin';
+
+              -- Помидоры
+              INSERT INTO products (
+                name, calories_per_100g, protein_per_100g, fat_per_100g, carbs_per_100g,
+                category_id, created_by_user_id, is_deleted, created_at, updated_at
+              )
+              SELECT 
+                'Помидоры', 20.00, 1.00, 0.20, 3.50, c.category_id, u.user_id, false, NOW(), NOW()
+              FROM categories c, users u 
+              WHERE c.category_name = 'Овощи' AND u.username = 'admin';
+
+              -- Яблоки
+              INSERT INTO products (
+                name, calories_per_100g, protein_per_100g, fat_per_100g, carbs_per_100g,
+                category_id, created_by_user_id, is_deleted, created_at, updated_at
+              )
+              SELECT 
+                'Яблоки', 47.00, 0.40, 0.40, 10.00, c.category_id, u.user_id, false, NOW(), NOW()
+              FROM categories c, users u 
+              WHERE c.category_name = 'Фрукты' AND u.username = 'admin';
+
+              -- Куриная грудка
+              INSERT INTO products (
+                name, calories_per_100g, protein_per_100g, fat_per_100g, carbs_per_100g,
+                category_id, created_by_user_id, is_deleted, created_at, updated_at
+              )
+              SELECT 
+                'Куриная грудка', 165.00, 31.00, 3.60, 0.00, c.category_id, u.user_id, false, NOW(), NOW()
+              FROM categories c, users u 
+              WHERE c.category_name = 'Мясо' AND u.username = 'admin';
+
+              -- Молоко
+              INSERT INTO products (
+                name, calories_per_100g, protein_per_100g, fat_per_100g, carbs_per_100g,
+                category_id, created_by_user_id, is_deleted, created_at, updated_at
+              )
+              SELECT 
+                'Молоко', 61.00, 3.20, 3.30, 4.80, c.category_id, u.user_id, false, NOW(), NOW()
+              FROM categories c, users u 
+              WHERE c.category_name = 'Молочные продукты' AND u.username = 'admin';
+
+              -- Яйцо куриное
+              INSERT INTO products (
+                name, calories_per_100g, protein_per_100g, fat_per_100g, carbs_per_100g,
+                category_id, created_by_user_id, is_deleted, created_at, updated_at
+              )
+              SELECT 
+                'Яйцо куриное', 143.00, 13.00, 10.00, 1.10, c.category_id, u.user_id, false, NOW(), NOW()
+              FROM categories c, users u 
+              WHERE c.category_name = 'Мясо' AND u.username = 'admin';
