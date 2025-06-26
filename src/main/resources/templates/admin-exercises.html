@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout}">
+<head>
+    <title layout:fragment="title">Аналитика активности</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:src="@{/js/admin.exercises.js}" defer></script>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="max-w-6xl mx-auto space-y-12">
+        <h1 class="text-4xl font-bold text-primary text-center animate-fade-in">Аналитика активности</h1>
+
+        <!-- Период выбора -->
+        <div class="flex justify-center space-x-4 animate-slide-up delay-200">
+            <input id="fromDate" type="date" class="border rounded p-2"/>
+            <input id="toDate" type="date" class="border rounded p-2"/>
+            <button id="loadStats" class="bg-primary text-white px-4 py-2 rounded hover:bg-green-700 transition">Загрузить</button>
+        </div>
+
+        <!-- Статистика -->
+        <div class="grid md:grid-cols-2 gap-8 animate-slide-up delay-300">
+            <div class="bg-white rounded-2xl shadow p-6">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Всего тренировок</h2>
+                <p id="totalEntries" class="text-lg text-gray-700">...</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow p-6">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Сожжено калорий</h2>
+                <p id="totalCalories" class="text-lg text-gray-700">...</p>
+                <p id="averageCalories" class="text-gray-500">(среднее за тренировку)</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow p-6">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Популярные упражнения</h2>
+                <ul id="popularExercises" class="space-y-2 text-gray-700"></ul>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow p-6">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Топ пользователей</h2>
+                <ul id="topUsers" class="space-y-2 text-gray-700"></ul>
+            </div>
+        </div>
+
+        <!-- График времени суток -->
+        <div class="bg-white rounded-2xl shadow p-6 animate-slide-up delay-300">
+            <h2 class="text-xl font-semibold mb-4 text-primary">Распределение по времени суток</h2>
+            <canvas id="timeOfDayChart" class="w-full max-h-96"></canvas>
+        </div>
+    </div>
+</main>
+</body>
+</html>

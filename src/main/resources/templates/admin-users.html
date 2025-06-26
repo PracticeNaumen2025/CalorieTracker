@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title layout:fragment="title">Аналитика пользователей</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:src="@{/js/admin.users.js}" defer></script>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="max-w-6xl mx-auto space-y-12">
+        <h1 class="text-4xl font-bold text-primary text-center animate-fade-in">Аналитика пользователей</h1>
+
+        <!-- Сводка -->
+        <div id="stats" class="grid md:grid-cols-3 gap-8 animate-slide-up delay-200">
+            <!-- Общая статистика -->
+            <div class="bg-white rounded-2xl shadow p-6">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Общая статистика</h2>
+                <div class="text-gray-700 space-y-2">
+                    <p><strong>Всего пользователей:</strong> <span id="totalUsers">...</span></p>
+                    <p><strong>Активных:</strong> <span id="activeUsers">...</span></p>
+                    <p><strong>Удалённых:</strong> <span id="deletedUsers">...</span></p>
+                    <p><strong>Роли:</strong></p>
+                    <ul id="usersByRole" class="grid grid-cols-2 gap-x-4 gap-y-1 list-none pl-2"></ul>
+                </div>
+            </div>
+
+            <!-- Демография -->
+            <div class="bg-white rounded-2xl shadow p-6">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Демография</h2>
+                <div class="text-gray-700 space-y-2">
+                    <p><strong>Средний возраст:</strong> <span id="averageAge">...</span></p>
+                    <p><strong>Средний рост (см):</strong> <span id="averageHeight">...</span></p>
+                    <p><strong>Средний вес (кг):</strong> <span id="averageWeight">...</span></p>
+                    <p><strong>Пол:</strong></p>
+                    <ul id="genderDistribution" class="grid grid-cols-2 gap-x-4 gap-y-1 list-none pl-2"></ul>
+                    <p><strong>Возрастные группы:</strong></p>
+                    <ul id="ageGroups" class="grid grid-cols-2 gap-x-4 gap-y-1 list-none pl-2"></ul>
+                </div>
+            </div>
+
+            <!-- Активные пользователи -->
+            <div class="bg-white rounded-2xl shadow p-6">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Активные пользователи</h2>
+                <label for="daysInput" class="block mb-2 text-sm font-medium text-gray-700">Период (дней):</label>
+                <div class="flex space-x-4 mb-4">
+                    <input id="daysInput" type="number" min="1" value="7" class="border rounded p-2 w-32" />
+                    <button id="loadActiveUsers" class="bg-primary text-white px-4 py-2 rounded hover:bg-green-700 transition">Показать</button>
+                </div>
+                <p><strong>Активных за период:</strong> <span id="activeUsersCount">...</span></p>
+            </div>
+        </div>
+
+        <!-- Регистрации -->
+        <div class="bg-white rounded-2xl shadow p-6 animate-slide-up delay-300">
+            <h2 class="text-xl font-semibold mb-4 text-primary">Регистрации</h2>
+            <label for="period" class="block mb-2 text-sm font-medium text-gray-700">Период:</label>
+            <div class="flex justify-center space-x-4 mb-4">
+                <input id="fromDate" type="date" class="border rounded p-2" />
+                <input id="toDate" type="date" class="border rounded p-2" />
+                <button id="loadRegistrations" class="bg-primary text-white px-4 py-2 rounded hover:bg-green-700 transition">Загрузить</button>
+            </div>
+            <div id="registrationsChart" class="w-full h-64"></div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

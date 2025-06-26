@@ -38,7 +38,13 @@
         </ul>
 
         <!-- Вход / Выход -->
-        <div class="ml-6">
+        <div class="ml-6 flex items-center space-x-3">
+            <div sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/admin}"
+                   class="bg-primary text-white px-4 py-2 rounded hover:bg-green-700 transition">
+                    Админ панель
+                </a>
+            </div>
             <div sec:authorize="isAuthenticated()">
                 <form th:action="@{/logout}" method="post">
                     <button type="submit"

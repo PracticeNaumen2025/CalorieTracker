@@ -40,4 +40,24 @@ public class HomeController {
     public String productsView(){
         return "products";
     }
+
+    @GetMapping("/admin")
+    public String adminView(){
+        return "admin";
+    }
+
+    @GetMapping("/admin/users")
+    public String adminUsersView(){
+        return "admin-users";
+    }
+
+    @GetMapping("/admin/products")
+    public String adminProductsView(){
+        return "admin-products";
+    }
+
+    @GetMapping("/admin/exercises")
+    public String adminExercisesView(){
+        return "admin-exercises";
+    }
 }

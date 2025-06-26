@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout}">
+<head>
+    <title layout:fragment="title">Аналитика продуктов</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:src="@{/js/admin.products.js}" defer></script>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="max-w-6xl mx-auto space-y-12 px-4 py-8">
+        <h1 class="text-4xl font-bold text-primary text-center animate-fade-in">Аналитика продуктов</h1>
+
+        <!-- Выбор периода -->
+        <div class="flex flex-wrap justify-center gap-4 animate-slide-up delay-200">
+            <div>
+                <label for="fromDate" class="block text-sm font-medium text-gray-600">С</label>
+                <input id="fromDate" type="date" class="border rounded p-2 w-40"/>
+            </div>
+            <div>
+                <label for="toDate" class="block text-sm font-medium text-gray-600">По</label>
+                <input id="toDate" type="date" class="border rounded p-2 w-40"/>
+            </div>
+            <div class="flex items-end">
+                <button id="loadStats" class="bg-primary text-white px-6 py-2 rounded hover:bg-green-700 transition">
+                    Загрузить
+                </button>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="grid md:grid-cols-2 gap-8 animate-slide-up delay-300">
+            <!-- Популярные продукты -->
+            <div class="bg-white rounded-2xl shadow p-6">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Популярные продукты</h2>
+                <ul id="popularProducts" class="space-y-2 text-gray-700 list-disc list-inside"></ul>
+            </div>
+
+            <!-- Средний размер порции -->
+            <div class="bg-white rounded-2xl shadow p-6">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Средний размер порции</h2>
+                <ul id="averagePortions" class="space-y-2 text-gray-700 list-disc list-inside"></ul>
+            </div>
+
+            <!-- Сводка по БЖУ -->
+            <div class="bg-white rounded-2xl shadow p-6 md:col-span-2">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Сводка по БЖУ</h2>
+                <ul id="nutritionSummary" class="space-y-4 text-gray-700 list-inside"></ul>
+            </div>
+
+            <!-- Популярные категории -->
+            <div class="bg-white rounded-2xl shadow p-6 md:col-span-2">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Популярность категорий</h2>
+                <ul id="popularCategories" class="space-y-2 text-gray-700 list-disc list-inside"></ul>
+            </div>
+        </div>
+
+        <!-- График калорий -->
+        <div class="bg-white rounded-2xl shadow p-6 animate-slide-up delay-300">
+            <h2 class="text-xl font-semibold mb-4 text-primary">Среднее количество калорий в день</h2>
+            <p class="text-lg text-gray-800">Среднее за период: <span id="averageCalories">...</span></p>
+        </div>
+    </div>
+</main>
+</body>
+</html>
