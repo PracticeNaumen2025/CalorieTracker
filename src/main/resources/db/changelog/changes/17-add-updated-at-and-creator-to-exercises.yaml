@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 17-add-updated-at-and-creator-to-exercises.yaml
+      author: Orgmange
+      changes:
+        - addColumn:
+            tableName: exercises
+            columns:
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_by_user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_exercises_users
+                    references: users(user_id) 

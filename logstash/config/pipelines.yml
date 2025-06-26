@@ -1,4 +1,6 @@
 - pipeline.id: products
   path.config: "/usr/share/logstash/pipeline/products.conf" 
 - pipeline.id: categories
-  path.config: "/usr/share/logstash/pipeline/category.conf" 
+  path.config: "/usr/share/logstash/pipeline/category.conf"
+- pipeline.id: exercises
+  path.config: "/usr/share/logstash/pipeline/exercises.conf" 
