@@ -8,24 +8,40 @@ import ru.naumen.calorietracker.model.User;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Сервис для работы с записями о физической активности.
+ */
 public interface ExerciseEntryService {
     /**
-     * Получить запись о физической активности по id
+     * Возвращает запись о физической активности по ее идентификатору для указанного пользователя.
+     * @param id Идентификатор записи о физической активности.
+     * @param user Пользователь, которому принадлежит запись.
+     * @return Объект ExerciseEntryResponse, представляющий запись.
      */
     ExerciseEntryResponse getExerciseEntryById(Integer id, User user);
 
     /**
-     * Получить все записи о физической активности текущего пользователя, произошедших за данный период
+     * Возвращает все записи о физической активности текущего пользователя за указанный период.
+     * @param start Начало периода.
+     * @param end Конец периода.
+     * @param user Пользователь, для которого запрашиваются записи.
+     * @return Список объектов ExerciseEntryResponse.
      */
     List<ExerciseEntryResponse> getExerciseEntriesByDate(LocalDateTime start, LocalDateTime end, User user);
 
     /**
-     * Создать запись о физической активности
+     * Создает новую запись о физической активности.
+     * @param request Запрос на создание записи о физической активности.
+     * @param user Пользователь, создающий запись.
+     * @return Объект ExerciseEntryResponse, представляющий созданную запись.
      */
     ExerciseEntryResponse createExerciseEntry(ExerciseEntryCreateRequest request, User user);
 
     /**
-     * Редактировать запись о физической активности
+     * Редактирует существующую запись о физической активности.
+     * @param request Запрос на обновление записи о физической активности.
+     * @param user Пользователь, обновляющий запись.
+     * @return Объект ExerciseEntryResponse, представляющий обновленную запись.
      */
     ExerciseEntryResponse updateExerciseEntry(ExerciseEntryUpdateRequest request, User user);
 }

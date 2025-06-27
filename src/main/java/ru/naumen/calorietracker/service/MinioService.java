@@ -13,6 +13,9 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+/**
+ * Сервис для взаимодействия с Minio (S3-совместимым хранилищем) для загрузки и удаления файлов.
+ */
 public class MinioService {
 
     private final S3Client s3Client;
@@ -24,6 +27,13 @@ public class MinioService {
     @Value("${minio.external.url}")
     private String minioExternalUrl;
 
+    /**
+     * Сохраняет файл-иконку в Minio.
+     * @param file Файл для сохранения.
+     * @return URL сохраненного файла.
+     * @throws IOException Если произошла ошибка ввода-вывода.
+     * @throws IllegalArgumentException Если файл пуст, превышает размер 10 МБ или не является изображением (JPEG, PNG).
+     */
     public String storeIconFile(MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("File cannot be empty");
@@ -51,6 +61,10 @@ public class MinioService {
         return String.format("%s/%s/%s", minioExternalUrl, iconsBucketName, fileName);
     }
 
+    /**
+     * Удаляет файл-иконку из Minio по ее URL.
+     * @param fileUrl URL файла для удаления.
+     */
     public void deleteIconFile(String fileUrl) {
         if (fileUrl == null || fileUrl.isEmpty()) {
             return;
@@ -59,6 +73,11 @@ public class MinioService {
         s3Client.deleteObject(b -> b.bucket(iconsBucketName).key(fileName));
     }
 
+    /**
+     * Проверяет, является ли тип контента изображением (JPEG или PNG).
+     * @param contentType Тип контента файла.
+     * @return true, если тип контента является изображением, иначе false.
+     */
     private boolean isImage(String contentType) {
         return contentType != null && (
                 contentType.equals("image/jpeg") ||
