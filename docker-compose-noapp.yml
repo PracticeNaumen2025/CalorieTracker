@@ -63,11 +63,6 @@ services:
       - elasticsearch_data:/usr/share/elasticsearch/data
     networks:
       - app-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
 
   logstash:
     build:
@@ -151,40 +146,6 @@ services:
       echo 'Bucket icons created and set to public read access';
       exit 0;
       "
-    networks:
-      - app-network
-
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: calorietracker-app
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_started
-      minio:
-        condition: service_healthy
-      init-minio:
-        condition: service_completed_successfully
-      elasticsearch:
-        condition: service_healthy
-      logstash:
-          condition: service_started
-    environment:
-      - CAL_DB_URL=jdbc:postgresql://postgres:5432
-      - CAL_DB_NAME=${CAL_DB_NAME}
-      - CAL_DB_USER=${CAL_DB_USER}
-      - CAL_DB_PASSWORD=${CAL_DB_PASSWORD}
-      - CAL_REDIS_HOST=redis
-      - CAL_ELASTIC_URL=http://elasticsearch:9200
-      - CAL_MINIO_URL=http://minio:9000
-      - CAL_MINIO_EXTERNAL_URL=http://minio:9000
-      - CAL_MINIO_ACCESS_KEY=${CAL_MINIO_ACCESS_KEY}
-      - CAL_MINIO_SECRET_KEY=${CAL_MINIO_SECRET_KEY}
-    ports:
-      - "8080:8080"
     networks:
       - app-network
 
