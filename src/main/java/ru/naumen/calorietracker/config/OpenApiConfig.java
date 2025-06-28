@@ -7,9 +7,15 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
+/**
+ * Конфигурация OpenAPI.
+ */
 @Configuration
 public class OpenApiConfig {
 
+    /**
+     * Кастомизатор операций OpenAPI, удаляющий параметр "sort" из запросов.
+     */
     @Bean
     public OperationCustomizer removeSortParam() {
         return (operation, handlerMethod) -> {

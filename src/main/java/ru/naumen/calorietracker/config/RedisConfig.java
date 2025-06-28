@@ -8,9 +8,18 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 
 import java.time.Duration;
 
+/**
+ * Конфигурация кэширования с использованием Redis.
+ */
 @Configuration
 public class RedisConfig {
 
+    /**
+     * Создает менеджер кэша Redis с TTL 15 минут.
+     *
+     * @param factory фабрика подключения к Redis
+     * @return менеджер кэша Redis
+     */
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory factory) {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
