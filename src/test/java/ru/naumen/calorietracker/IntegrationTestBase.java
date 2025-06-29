@@ -1,39 +1,49 @@
 package ru.naumen.calorietracker;
 
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import software.amazon.awssdk.services.s3.S3Client;
+import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
 @Testcontainers
-@ActiveProfiles("test")
+@TestPropertySource(properties = {
+    "CAL_MINIO_ACCESS_KEY=test-access-key",
+    "CAL_MINIO_SECRET_KEY=test-secret-key",
+    "CAL_MINIO_URL=http://localhost:9000",
+    "CAL_MINIO_EXTERNAL_URL=http://localhost:9000"
+})
 public abstract class IntegrationTestBase {
 
-    @MockBean
-    private S3Client s3Client;
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        public S3Client s3Client() {
+            return Mockito.mock(S3Client.class);
+        }
 
-    @MockBean
-    private RedisConnectionFactory redisConnectionFactory;
-
-    @Container
-    private static final PostgreSQLContainer<?> postgresqlContainer = 
-        new PostgreSQLContainer<>("postgres:15-alpine");
-
-    @Container
-    private static final ElasticsearchContainer elasticsearchContainer = 
-        new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:8.11.3");
-
-    @DynamicPropertySource
-    static void setProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgresqlContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgresqlContainer::getUsername);
-        registry.add("spring.datasource.password", postgresqlContainer::getPassword);
-
-        registry.add("spring.elasticsearch.uris", elasticsearchContainer::getHttpHostAddress);
+        @Bean
+        public RedisConnectionFactory redisConnectionFactory() {
+            return Mockito.mock(RedisConnectionFactory.class);
+        }
     }
-}
 
+    @Container
+    @ServiceConnection
+    private static final PostgreSQLContainer<?> postgresqlContainer =
+            new PostgreSQLContainer<>("postgres:17");
+
+    @Container
+    @ServiceConnection
+    private static final ElasticsearchContainer elasticsearchContainer =
+            new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:8.17.7")
+                    .withEnv("xpack.security.enabled", "false");
+}
