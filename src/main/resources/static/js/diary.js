@@ -182,26 +182,21 @@ document.getElementById("mealForm").addEventListener("submit", async (event) => 
     }
 });
 
-
+let productSearchInited = false;
+let selectedProduct = null;
 
 // Открытие формы добавления еды
 document.getElementById("addFoodEntryBtn").addEventListener("click", async () => {
     const date = document.getElementById("dateInput").value;
-    console.log("Выбранная дата:", date); // Лог даты перед загрузкой
-
     if (!date) {
         alert("Сначала выберите дату.");
         return;
     }
-
     try {
         // Загрузка приёмов пищи по дате
         const mealsRes = await fetch(`/api/diary/meals?date=${date}`);
-        console.log("Статус ответа meals:", mealsRes.status);
         if (!mealsRes.ok) throw new Error("Ошибка при загрузке приёмов пищи");
         const meals = await mealsRes.json();
-        console.log("Загружены приёмы пищи:", meals);
-
         const mealSelect = document.getElementById("mealSelect");
         mealSelect.innerHTML = meals.map(meal => {
             const time = new Date(meal.dateTime).toLocaleTimeString("ru-RU", {
@@ -210,36 +205,101 @@ document.getElementById("addFoodEntryBtn").addEventListener("click", async () =>
             const type = meal.mealType.charAt(0).toUpperCase() + meal.mealType.slice(1);
             return `<option value="${meal.mealId}">${type} — ${time}</option>`;
         }).join("");
-        console.log("Заполнен mealSelect:", mealSelect.innerHTML);
-
-        // Загрузка продуктов
-        const productsRes = await fetch(`/api/products`);
-        console.log("Статус ответа products:", productsRes.status);
-        if (!productsRes.ok) throw new Error("Ошибка при загрузке продуктов");
-        const products = await productsRes.json();
-        console.log("Загружены продукты:", products);
-
-        const productSelect = document.getElementById("productSelect");
-        productSelect.innerHTML = products.map(p => `<option value="${p.productId}">${p.name}</option>`).join("");
-        console.log("Заполнен productSelect:", productSelect.innerHTML);
 
         // Показать оверлей
         document.getElementById("foodEntryOverlay").classList.remove("hidden");
+
+        // Инициализация поиска продуктов только после появления элементов
+        if (!productSearchInited) {
+            const productSearch = document.getElementById('productSearch');
+            const productDropdown = document.getElementById('productDropdown');
+            const productInfo = document.getElementById('productInfo');
+            selectedProduct = null;
+            if (productSearch && productDropdown && productInfo) {
+                let productSearchTimeout;
+                productSearch.addEventListener('input', (e) => {
+                    clearTimeout(productSearchTimeout);
+                    const query = e.target.value.trim();
+                    selectedProduct = null;
+                    productInfo.textContent = '';
+                    if (!query) {
+                        productDropdown.classList.add('hidden');
+                        return;
+                    }
+                    productSearchTimeout = setTimeout(async () => {
+                        try {
+                            const res = await fetch(`/api/products/search?name=${encodeURIComponent(query)}&size=7`);
+                            if (!res.ok) throw new Error('Ошибка поиска продуктов');
+                            const data = await res.json();
+                            renderProductDropdown(data.content || data);
+                        } catch (err) {
+                            productDropdown.innerHTML = `<div class='text-red-500 px-4 py-2'>${err.message}</div>`;
+                            productDropdown.classList.remove('hidden');
+                        }
+                    }, 300);
+                });
+                productSearch.addEventListener('focus', () => {
+                    if (productSearch.value.trim().length > 0) {
+                        productSearch.dispatchEvent(new Event('input'));
+                    }
+                });
+                document.addEventListener('click', (e) => {
+                    if (!productDropdown.contains(e.target) && e.target !== productSearch) {
+                        productDropdown.classList.add('hidden');
+                    }
+                });
+                function renderProductDropdown(products) {
+                    productDropdown.innerHTML = '';
+                    if (!products || products.length === 0) {
+                        productDropdown.innerHTML = `<div class='px-4 py-2 text-gray-500 w-full truncate rounded-md'>Ничего не найдено</div>`;
+                    } else {
+                        products.forEach(prod => {
+                            const item = document.createElement('div');
+                            item.className = 'px-4 py-2 hover:bg-primary hover:text-white cursor-pointer';
+                            item.textContent = prod.name;
+                            item.addEventListener('click', () => {
+                                selectedProduct = prod;
+                                productSearch.value = prod.name;
+                                productDropdown.classList.add('hidden');
+                                productInfo.innerHTML = `Калории: <b>${prod.caloriesPer100g}</b> ккал, Б: <b>${prod.proteinPer100g}</b> г, Ж: <b>${prod.fatPer100g}</b> г, У: <b>${prod.carbsPer100g}</b> г`;
+                            });
+                            productDropdown.appendChild(item);
+                        });
+                    }
+                    productDropdown.classList.remove('hidden');
+                }
+            }
+            productSearchInited = true;
+        }
+
+        // Загрузка продуктов больше не требуется (поиск по мере ввода)
     } catch (err) {
         alert(err.message || "Ошибка при загрузке данных");
         console.error(err);
     }
 });
 
+// Сброс инициализации поиска при закрытии оверлея
+const closeFoodOverlayBtn = document.getElementById("closeFoodOverlay");
+if (closeFoodOverlayBtn) {
+    closeFoodOverlayBtn.addEventListener("click", () => {
+        document.getElementById("foodEntryOverlay").classList.add("hidden");
+        productSearchInited = false;
+    });
+}
+
 // Обработка формы добавления еды
 document.getElementById("foodEntryForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const mealId = document.getElementById("mealSelect").value;
-    const productId = document.getElementById("productSelect").value;
     const portionGrams = document.getElementById("portionGrams").value;
 
-    console.log("Отправляемые данные:", { mealId, productId, portionGrams });
+    if (!selectedProduct || !selectedProduct.productId) {
+        alert("Пожалуйста, выберите продукт из списка поиска.");
+        return;
+    }
+    const productId = selectedProduct.productId;
 
     if (!mealId || !productId || !portionGrams) {
         alert("Пожалуйста, заполните все поля.");
@@ -252,16 +312,12 @@ document.getElementById("foodEntryForm").addEventListener("submit", async (e) =>
         portionGrams: parseFloat(portionGrams)
     };
 
-    console.log("Формируем payload:", payload);
-
     try {
         const res = await fetch("/api/diary/food-entries", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         });
-
-        console.log("Ответ от сервера:", res.status);
 
         if (!res.ok) {
             const msg = await res.text();
@@ -271,17 +327,16 @@ document.getElementById("foodEntryForm").addEventListener("submit", async (e) =>
         alert("Еда успешно добавлена!");
         document.getElementById("foodEntryOverlay").classList.add("hidden");
         document.getElementById("foodEntryForm").reset();
+        selectedProduct = null;
+        const productInfo = document.getElementById('productInfo');
+        if (productInfo) productInfo.textContent = '';
+        productSearchInited = false;
         loadDiary();
     } catch (err) {
         alert(err.message);
         console.error(err);
     }
 });
-
-document.getElementById("closeFoodOverlay").addEventListener("click", () => {
-    document.getElementById("foodEntryOverlay").classList.add("hidden");
-});
-
 
 document.addEventListener("DOMContentLoaded", () => {
     const dateInput = document.getElementById("dateInput");
