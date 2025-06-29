@@ -11,6 +11,9 @@ import software.amazon.awssdk.services.s3.S3Configuration;
 
 import java.net.URI;
 
+/**
+ * Конфигурация клиента S3 для работы с MinIO.
+ */
 @Configuration
 public class S3Config {
 
@@ -23,6 +26,11 @@ public class S3Config {
     @Value("${minio.url}")
     private String minioUrl;
 
+    /**
+     * Создает клиента S3, сконфигурированного для работы с MinIO.
+     *
+     * @return клиент S3
+     */
     @Bean
     public S3Client s3Client() {
         return S3Client.builder()

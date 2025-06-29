@@ -8,14 +8,30 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Конфигурация безопасности Spring Security.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    /**
+     * Кодировщик паролей с использованием BCrypt.
+     *
+     * @return {@link BCryptPasswordEncoder}
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Фильтр безопасности, настраивающий правила доступа и аутентификации.
+     *
+     * @param http объект конфигурации безопасности
+     * @return цепочка фильтров безопасности
+     * @throws Exception при ошибках конфигурации
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
