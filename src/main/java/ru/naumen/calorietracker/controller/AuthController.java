@@ -7,6 +7,10 @@ import ru.naumen.calorietracker.dto.UserRegisterRequest;
 import ru.naumen.calorietracker.dto.UserResponse;
 import ru.naumen.calorietracker.service.UserService;
 
+/**
+ * REST контроллер для аутентификации пользователей.
+ * Предоставляет endpoints для регистрации и других операций, связанных с авторизацией.
+ */
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
@@ -18,6 +22,13 @@ public class AuthController {
         this.userService = userService;
     }
 
+    /**
+     * Endpoint для регистрации нового пользователя.
+     *
+     * @param request DTO с данными для регистрации пользователя
+     * @return ResponseEntity с информацией о зарегистрированном пользователе в случае успеха,
+     *         или 400 Bad Request при ошибке регистрации
+     */
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRegisterRequest request) {
         try {

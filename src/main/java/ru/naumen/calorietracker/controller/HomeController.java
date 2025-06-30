@@ -3,6 +3,10 @@ package ru.naumen.calorietracker.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * Контроллер для обработки запросов к основным страницам веб-приложения.
+ * Возвращает имена представлений (шаблонов) для маршрутов.
+ */
 @Controller
 public class HomeController {
 

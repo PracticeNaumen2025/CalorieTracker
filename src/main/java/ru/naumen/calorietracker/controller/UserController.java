@@ -9,6 +9,12 @@ import ru.naumen.calorietracker.util.AuthUtils;
 
 import java.security.Principal;
 
+/**
+ * Контроллер для получения информации о текущем пользователе и проверке прав доступа.
+ * <p>
+ * Позволяет получить идентификатор текущего аутентифицированного пользователя
+ * и проверить, имеет ли пользователь роль администратора.
+ */
 @RestController
 @RequestMapping("api/user")
 public class UserController {
@@ -20,11 +26,24 @@ public class UserController {
         this.accessChecker = accessChecker;
     }
 
+    /**
+     * Получить идентификатор текущего аутентифицированного пользователя.
+     *
+     * @param principal объект с данными аутентификации пользователя
+     * @return ResponseEntity с идентификатором пользователя
+     */
     @GetMapping("/current")
     public ResponseEntity<Integer> getCurrentUserId(Principal principal){
         return ResponseEntity.ok(authUtils.getAuthenticatedUser(principal).getUserId());
     }
 
+    /**
+     * Проверить, является ли текущий пользователь администратором.
+     *
+     * @return ResponseEntity с логическим значением:
+     * true - если пользователь имеет роль администратора,
+     * false - в противном случае
+     */
     @GetMapping("/is_admin")
     public ResponseEntity<Boolean> isUserAdmin(){
         Boolean isAdmin = accessChecker.isAdmin();

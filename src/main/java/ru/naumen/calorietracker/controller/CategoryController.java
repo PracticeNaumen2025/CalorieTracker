@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.naumen.calorietracker.dto.CategoryResponse;
 import ru.naumen.calorietracker.service.CategoryService;
 
+/**
+ * REST контроллер для работы с категориями.
+ */
 @RestController
 @RequestMapping("api/category")
 public class CategoryController {
@@ -21,6 +24,13 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    /**
+     * Поиск категорий по префиксу имени с пагинацией.
+     *
+     * @param name имя или префикс имени категории для поиска
+     * @param pageable параметры пагинации (страница, размер)
+     * @return страница с категориями, имя которых начинается с заданного префикса
+     */
     @GetMapping
     public Page<CategoryResponse> findCategoriesByNamePrefix(
             @RequestParam String name,

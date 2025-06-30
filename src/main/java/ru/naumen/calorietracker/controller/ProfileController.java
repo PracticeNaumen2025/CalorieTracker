@@ -12,6 +12,10 @@ import ru.naumen.calorietracker.util.AuthUtils;
 import java.io.IOException;
 import java.security.Principal;
 
+/**
+ * Контроллер для управления профилем пользователя.
+ * Позволяет получать и обновлять профиль, а также загружать фото профиля.
+ */
 @RestController
 @RequestMapping("/api/profile")
 @CrossOrigin(origins = "*")
@@ -25,6 +29,12 @@ public class ProfileController {
         this.authUtils = authUtils;
     }
 
+    /**
+     * Получить профиль текущего аутентифицированного пользователя.
+     *
+     * @param principal текущий пользователь
+     * @return данные профиля пользователя
+     */
     @GetMapping
     public ResponseEntity<UserResponse> getProfile(Principal principal) {
         authUtils.checkAuthentication(principal);
@@ -32,6 +42,13 @@ public class ProfileController {
         return ResponseEntity.ok(userResponse);
     }
 
+    /**
+     * Обновить данные профиля текущего пользователя.
+     *
+     * @param principal текущий пользователь
+     * @param updateRequest данные для обновления профиля
+     * @return обновленные данные профиля
+     */
     @PatchMapping
     public ResponseEntity<UserResponse> updateProfile(
             Principal principal,
@@ -42,6 +59,13 @@ public class ProfileController {
         return ResponseEntity.ok(updatedUser);
     }
 
+    /**
+     * Загрузить и обновить фотографию профиля пользователя.
+     *
+     * @param principal текущий пользователь
+     * @param file файл с фотографией (multipart/form-data)
+     * @return обновленные данные профиля с новой фотографией
+     */
     @PostMapping(value = "/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<UserResponse> uploadProfilePhoto(
             Principal principal,

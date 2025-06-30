@@ -11,6 +11,10 @@ import ru.naumen.calorietracker.util.AuthUtils;
 import java.security.Principal;
 import java.util.List;
 
+/**
+ * REST-контроллер для работы с историческими измерениями пользователя,
+ * такими как вес и рост на определённую дату.
+ */
 @RestController
 @RequestMapping("/api/measurements")
 @RequiredArgsConstructor
@@ -20,6 +24,12 @@ public class UserMeasurementController {
     private final AuthUtils authUtils;
 
 
+    /**
+     * Получить список всех измерений текущего аутентифицированного пользователя.
+     *
+     * @param principal объект с данными аутентификации пользователя
+     * @return ResponseEntity со списком измерений (вес, рост и дата)
+     */
     @GetMapping("/me")
     public ResponseEntity<List<UserMeasurementResponse>> getAllMeasurementsForCurrentUser(Principal principal) {
         User user = authUtils.getAuthenticatedUser(principal);
